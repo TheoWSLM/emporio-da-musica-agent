@@ -15,6 +15,27 @@ services:
       # The demo is public: the API only trusts X-Forwarded-For because it is reachable solely through Caddy.
       LOG_LEVEL: INFO
 
+  # Optional: a Cloudflare *Quick Tunnel* (random https://<words>.trycloudflare.com URL, no domain or
+  # account needed). Used for the case demo while no hostname is routed through the main tunnel.
+  #   docker compose -f compose.yaml -f deploy/homeserver/compose.server.yaml --profile quick-tunnel up -d
+  #   docker compose ... logs quick-tunnel | grep trycloudflare.com      # the public URL
+  # The URL changes whenever this container is recreated. It only sees the app's private network.
+  quick-tunnel:
+    image: cloudflare/cloudflared:latest@sha256:4955524aeaa379e154023d5a027c250f7b35041a2e7e950cf13f144bc9b9c5ba
+    profiles: [quick-tunnel]
+    command: [tunnel, --no-autoupdate, --url, "http://emporio-musica-caddy:80"]
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    networks: [backend]
+    depends_on:
+      emporio-musica-caddy: {condition: service_healthy}
+    mem_limit: 128m
+    cpus: 1
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
 networks:
   ingress:
     external: true
