@@ -10,7 +10,6 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Empório da Música — Customer Service Agent",
         version=settings.release_id,
-        root_path="/api",
     )
 
     @app.get("/health", tags=["ops"])

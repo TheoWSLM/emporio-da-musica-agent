@@ -46,7 +46,7 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "ASYNC"]
-ignore = ["RUF001", "RUF002", "RUF003"]  # Portuguese text legitimately contains accented/ambiguous chars
+ignore = ["E501", "RUF001", "RUF002", "RUF003"]  # line length is the formatter's job; Portuguese text has accented chars
 
 [tool.mypy]
 python_version = "3.13"
