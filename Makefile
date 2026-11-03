@@ -16,7 +16,7 @@ help: ## List available targets
 up: .env ## Build and start the whole stack (DB, migrations, ingestion, API, web)
 	@mkdir -p data/postgres
 	$(COMPOSE) up -d --build
-	@echo "UI:  http://127.0.0.1:$${EDGE_PORT:-18082}"
+	@port="$${EDGE_PORT:-$$(sed -nE 's/^EDGE_PORT=([0-9]+).*/\1/p' .env)}"; echo "UI:  http://127.0.0.1:$${port:-18082}"
 
 down: ## Stop the stack (keeps the database)
 	$(COMPOSE) down

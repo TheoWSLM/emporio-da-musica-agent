@@ -316,6 +316,40 @@ merge. The Pydantic objects travel *inside* it.
   - non-root user and log rotation.
 - **Trade-off:** Kubernetes would only add operational surface at this scale.
 
+### 13. Framework: LangGraph for the turn, the OpenAI SDK for the model (no LangChain)
+- **Why LangGraph:** one turn is a real graph, not a straight line:
+  - a parallel fan-out and join (classifier and policy prefetch);
+  - conditional routing (block, off-topic, proceed);
+  - a bounded loop (agent ⇄ tools, with a round limit);
+  - a retry edge after a rejected draft.
+
+  LangGraph gives these as explicit nodes and edges, each node is a plain async method that can be tested on
+  its own, and its custom stream mode feeds the live SSE events to the UI.
+- **Why the OpenAI SDK directly:** strict function calling, Structured Outputs in the same call that may request
+  tools, and encrypted reasoning items are all first-class in the Responses API. Calling it directly behind the
+  `ChatModel` port gives full control with no extra abstraction layer.
+- **Alternatives:**
+  - LangChain agents hide the tool loop and wrap the model, which makes those features harder to control.
+  - A hand-written `asyncio` loop would work, but the parallel branches, routing and streaming would be
+    reimplemented by hand.
+  - Multi-agent frameworks (CrewAI, AutoGen) do not fit a single-agent design (decision 2).
+- **Trade-off:** one dependency for orchestration. It stays contained: the nodes are plain Python and the
+  model sits behind a port.
+
+### 14. Interface: an API first, then a web chat and a CLI on top of it
+- **Why:**
+  - **The API** (FastAPI, Server-Sent Events) is the contract. A real channel such as WhatsApp would plug into
+    the same endpoints.
+  - **The web chat** (Vue 3) is for the evaluator. Its "backstage" panel shows, per message, the classifier's
+    reading, the tools called and the policy sections cited. That makes visible what the case evaluates:
+    *when* the agent queries data and *when* it queries policies.
+  - **The CLI** (`make chat`) gives a quick test in the terminal, with the same events printed inline.
+- **Why SSE, not WebSockets:** each turn is a one-way stream from server to client. Plain HTTP streaming is
+  enough and passes through proxies and the tunnel without extra setup.
+- **Alternatives:** the brief accepts a CLI or a notebook alone. That would be less code, but it hides the
+  agent's decisions and gives no shareable demo.
+- **Trade-off:** a small frontend to maintain, in exchange for observability and a demo that needs no setup.
+
 ---
 
 ## Data handling and assumptions
@@ -335,6 +369,7 @@ handled, is in [`reports/data-quality.md`](reports/data-quality.md). The main po
 | The manual does not define the "metropolitan region" or list holidays | The city of Campo Grande is treated as the metro region; Brazil's fixed national holidays are used (movable ones are a known limitation) |
 | Regret returns apply to online purchases, but orders have no channel | All orders are assumed to be online |
 | Near-duplicate customer names (e.g. "Bruno Carvalho Martins" and "Bruno Carvalho") | Identity is checked by e-mail or phone, never by name |
+| The brief does not say which language the agent should use; the recruiter's e-mail asks for the case responses in English | The store, its customers, the manual and the brief's sample questions are Brazilian, so **the agent answers in Brazilian Portuguese**. The deliverables addressed to the evaluators (this README, code, commits, the submission PDF) are in English; the example conversations are in Portuguese with an English summary on top |
 
 ---
 
