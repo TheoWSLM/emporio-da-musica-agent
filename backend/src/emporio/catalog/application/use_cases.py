@@ -20,7 +20,7 @@ from emporio.catalog.domain.installments import (
     installment_options,
 )
 from emporio.catalog.domain.models import Product, Promotion
-from emporio.catalog.domain.pricing import PIX_DISCOUNT_PERCENT, PriceQuote, quote_price
+from emporio.catalog.domain.pricing import PriceQuote, pix_price, quote_price
 from emporio.catalog.domain.scope import detect_accessory, resolve_categories
 from emporio.knowledge.application.ports import Embedder
 from emporio.shared.errors import NotFoundError
@@ -155,8 +155,9 @@ class CatalogService:
             pix_total = offer.quote.pix_price
             pix_discount = offer.quote.pix_discount_applies
         elif amount is not None:
+            # A bare amount is taken at list prices (the tool describes it as a cart total).
             card_total = Money.of(amount)
-            pix_total = card_total.minus_percent(PIX_DISCOUNT_PERCENT)
+            pix_total = pix_price(card_total)
             pix_discount = True
         else:
             raise ValueError("informe product_id ou amount")

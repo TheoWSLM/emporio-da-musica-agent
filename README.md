@@ -354,7 +354,7 @@ Each case checks:
 | Classifier | Passed | Security / scope / LGPD | Turn latency p50 / p95 | Classifier p50 / p95 | Agent calls / turn | Tone (1–5) |
 |---|---|---|---|---|---|---|
 | OpenAI `gpt-6-luna` (default) | **28/28** | 7/7 | 6.5 s / 9.2 s | 1.6 s / 2.8 s | 1.64 | 4.62 |
-| Jev (optional) | **28/28** | 7/7 | 5.0 s / 8.3 s | 0.19 s / 0.28 s | 1.71 | 4.60 |
+| Jev (optional) | **28/28** | 7/7 | 5.0 s / 7.5 s | 0.18 s / 0.26 s | 1.71 | 4.52 |
 
 The agent is generative, so results vary a little between runs. In one run of the Jev configuration, two policy
 cases (the 7-day regret window and the 90-day warranty) answered correctly but without the exact expected fact.

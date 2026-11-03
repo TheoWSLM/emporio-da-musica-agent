@@ -55,3 +55,9 @@ def test_availability_is_derived_from_status_and_stock() -> None:
     assert product(status=ProductStatus.DISCONTINUED).availability is Availability.DISCONTINUED
     assert product(status=ProductStatus.COMING_SOON).availability is Availability.COMING_SOON
     assert product().is_sellable
+
+
+def test_pix_price_for_a_bare_amount() -> None:
+    from emporio.catalog.domain.pricing import pix_price
+
+    assert pix_price(Money.of(2000)) == Money.of(1900)

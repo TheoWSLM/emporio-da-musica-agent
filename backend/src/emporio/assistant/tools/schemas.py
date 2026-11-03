@@ -56,7 +56,7 @@ class PaymentOptionsArgs(Args):
         description="Product id when the question is about a specific product."
     )
     amount: float | None = Field(
-        description="Purchase amount in BRL when there is no single product (e.g. a cart total).",
+        description="Purchase amount in BRL at list prices when there is no single product (e.g. a cart total without promotional items).",
         gt=0,
     )
     installments: int | None = Field(

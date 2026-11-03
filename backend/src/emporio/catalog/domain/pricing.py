@@ -31,6 +31,11 @@ class PriceQuote:
         return self.active_promotion.discount_percent if self.active_promotion else None
 
 
+def pix_price(list_price: Money) -> Money:
+    """PIX price for an amount at list (non-promotional) prices."""
+    return list_price.minus_percent(PIX_DISCOUNT_PERCENT)
+
+
 def best_active_promotion(promotions: Iterable[Promotion]) -> Promotion | None:
     active = [p for p in promotions if p.is_active]
     return max(active, key=lambda p: p.discount_percent, default=None)
@@ -51,6 +56,6 @@ def quote_price(product: Product, promotions: Iterable[Promotion]) -> PriceQuote
         list_price=product.price,
         active_promotion=None,
         final_price=product.price,
-        pix_price=product.price.minus_percent(PIX_DISCOUNT_PERCENT),
+        pix_price=pix_price(product.price),
         pix_discount_applies=True,
     )
