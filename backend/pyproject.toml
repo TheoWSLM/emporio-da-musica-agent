@@ -1,0 +1,71 @@
+[project]
+name = "emporio"
+version = "0.1.0"
+requires-python = ">=3.13"
+description = "Customer-service agent for Empório da Música (Artefact AI Engineer case)"
+dependencies = [
+    "alembic>=1.20.1",
+    "fastapi>=0.162.0",
+    "httpx>=0.28.1",
+    "langgraph>=1.2.19",
+    "openai>=3.42.1",
+    "pgvector>=0.5.1",
+    "psycopg[binary]>=3.3.7",
+    "pydantic>=2.14.2",
+    "pydantic-settings>=2.16.2",
+    "pymupdf>=2.1",
+    "pyyaml>=6.0.3",
+    "sqlalchemy[asyncio]>=2.1.6",
+    "sse-starlette>=3.6.0",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.4.1.post1",
+    "ruff>=0.17.3",
+    "types-pyyaml>=6.0.12.20261103",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/emporio"]
+
+[project.scripts]
+emporio = "emporio.cli:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "ASYNC"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # Portuguese text legitimately contains accented/ambiguous chars
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+mypy_path = "src"
+packages = ["emporio"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["pgvector.*", "fitz.*", "pymupdf.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]
+markers = [
+    "integration: needs the Postgres from docker compose",
+    "evals: calls real LLMs (needs OPENAI_API_KEY)",
+]
+addopts = "-m 'not evals'"

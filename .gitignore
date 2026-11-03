@@ -1,0 +1,31 @@
+# Local planning notes (never published)
+docs/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data
+data/postgres/
+data/backups/
+RELEASE
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+frontend/dist/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
