@@ -7,6 +7,10 @@ from dataclasses import dataclass
 from openai import AsyncOpenAI
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
+from emporio.assistant.classification.jev import JevClient, JevInputClassifier, JevOutputClassifier
+from emporio.assistant.classification.openai import OpenAIInputClassifier, OpenAIOutputClassifier
+from emporio.assistant.classification.ports import InputClassifier, OutputClassifier
+from emporio.assistant.graph import AgentConfig, Assistant
 from emporio.assistant.tools.context import Services
 from emporio.catalog.application.use_cases import CatalogService
 from emporio.catalog.infrastructure.repositories import (
@@ -58,6 +62,8 @@ class Container:
     clock: Clock
     services: Services
     conversations: SqlConversationStore
+    assistant: Assistant
+    jev: JevClient | None = None
 
     @classmethod
     def build(cls, settings: Settings) -> Container:
@@ -70,6 +76,36 @@ class Container:
         )
         embedder = OpenAIEmbedder(client, settings.embedding_model, settings.embedding_dimensions)
         clock = build_clock(settings)
+        services = build_services(sessions, embedder, clock)
+        conversations = SqlConversationStore(sessions)
+        input_classifier: InputClassifier = OpenAIInputClassifier(client, settings.classifier_model)
+        output_classifier: OutputClassifier = OpenAIOutputClassifier(
+            client, settings.classifier_model
+        )
+        jev = None
+        if settings.jev_enabled and settings.typesafe_api_key is not None:
+            jev = JevClient(
+                settings.typesafe_api_key.get_secret_value(),
+                settings.jev_model,
+                settings.jev_timeout_seconds,
+            )
+            input_classifier = JevInputClassifier(jev, fallback=input_classifier)
+            output_classifier = JevOutputClassifier(jev, fallback=output_classifier)
+        assistant = Assistant(
+            client=client,
+            services=services,
+            conversations=conversations,
+            input_classifier=input_classifier,
+            output_classifier=output_classifier,
+            config=AgentConfig(
+                model=settings.agent_model,
+                reasoning_effort=settings.agent_reasoning_effort,
+                max_output_tokens=settings.agent_max_output_tokens,
+                max_tool_rounds=settings.agent_max_tool_rounds,
+                history_window=settings.history_window,
+                output_review=settings.output_review,
+            ),
+        )
         return cls(
             settings=settings,
             engine=engine,
@@ -77,10 +113,14 @@ class Container:
             openai=client,
             embedder=embedder,
             clock=clock,
-            services=build_services(sessions, embedder, clock),
-            conversations=SqlConversationStore(sessions),
+            services=services,
+            conversations=conversations,
+            assistant=assistant,
+            jev=jev,
         )
 
     async def close(self) -> None:
+        if self.jev is not None:
+            await self.jev.close()
         await self.openai.close()
         await self.engine.dispose()

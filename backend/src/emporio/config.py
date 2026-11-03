@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     typesafe_api_key: SecretStr | None = None
     classifier_provider: ClassifierProvider = "auto"
     agent_model: str = "gpt-6.1-terra"
-    agent_reasoning_effort: Literal["none", "low", "medium", "high"] = "low"
+    agent_reasoning_effort: Literal["none", "low", "medium", "high"] = "none"
     agent_max_output_tokens: int = 1200
     agent_max_tool_rounds: int = 6
     classifier_model: str = "gpt-6-luna"
@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     embedding_dimensions: int = 1536
     jev_model: str = "jev-latest"
     jev_timeout_seconds: float = 1.5
+    output_review: bool = True
 
     # Infrastructure
     database_url: str = "postgresql+psycopg://emporio:emporio@localhost:5432/emporio"
@@ -61,9 +62,7 @@ class Settings(BaseSettings):
 
     @property
     def jev_enabled(self) -> bool:
-        if self.classifier_provider == "openai":
-            return False
-        return self.typesafe_api_key is not None
+        return self.classifier_provider != "openai" and self.typesafe_api_key is not None
 
 
 @lru_cache
