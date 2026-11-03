@@ -39,6 +39,8 @@ class TurnState(TypedDict, total=False):
     reply: CustomerReply | None
     attempts: int
     validation_problems: list[str]
+    rejections: Annotated[list[str], operator.add]
+    """Every problem found across attempts (audit: shows what the validators actually catch)."""
     outcome: str
     """answered | blocked | off_topic | fallback"""
     final: CustomerReply

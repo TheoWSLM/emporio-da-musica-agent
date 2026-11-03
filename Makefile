@@ -49,11 +49,11 @@ lint: ## Ruff + mypy
 fmt: ## Auto-format
 	$(BACKEND) uv run ruff format . && uv run ruff check --fix .
 
-eval: ## Golden-set evaluation against the real models (needs OPENAI_API_KEY)
-	$(COMPOSE) run --rm api emporio eval
+eval: ## Golden-set evaluation against the real models (needs OPENAI_API_KEY); writes reports/
+	$(COMPOSE) run --rm -T -e CLASSIFIER_PROVIDER=$${CLASSIFIER_PROVIDER:-auto} -v ./reports:/app/reports api emporio eval
 
 examples: ## Regenerate the example conversations in examples/conversations
-	$(COMPOSE) run --rm -v ./examples:/app/examples api emporio examples
+	$(COMPOSE) run --rm -T -v ./examples:/app/examples api emporio examples
 
 reset: ## Destroy the database volume (data is re-ingested on next 'make up')
 	$(COMPOSE) down

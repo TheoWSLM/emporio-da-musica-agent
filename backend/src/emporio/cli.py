@@ -98,6 +98,11 @@ def main() -> None:
 
     chat = commands.add_parser("chat", help="talk to the agent in the terminal")
     chat.add_argument("--quiet", action="store_true", help="hide classifier/tool events")
+    evaluate = commands.add_parser("eval", help="run the golden set against the real models")
+    evaluate.add_argument("--output", type=Path, default=Path("reports"))
+    examples = commands.add_parser("examples", help="regenerate the example conversations")
+    examples.add_argument("--scripts", type=Path, default=Path("examples/scripts.yaml"))
+    examples.add_argument("--output", type=Path, default=Path("examples/conversations"))
     ask = commands.add_parser(
         "ask", help="send scripted messages (one conversation) and print the replies"
     )
@@ -113,6 +118,15 @@ def main() -> None:
         _data_report(args.output)
     elif args.command == "chat":
         asyncio.run(_conversation(None, show_events=not args.quiet))
+    elif args.command == "eval":
+        from emporio.evaluation.runner import run_eval
+
+        print(f"wrote {asyncio.run(run_eval(get_settings(), args.output))}")
+    elif args.command == "examples":
+        from emporio.evaluation.examples import run_examples
+
+        for path in asyncio.run(run_examples(get_settings(), args.scripts, args.output)):
+            print(f"wrote {path}")
     elif args.command == "ask":
         asyncio.run(_conversation(args.messages, show_events=True))
 

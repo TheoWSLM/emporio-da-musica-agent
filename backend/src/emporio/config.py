@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     embedding_dimensions: int = 1536
     jev_model: str = "jev-latest"
     jev_timeout_seconds: float = 1.5
-    output_review: bool = True
+    output_review: bool = False  # LLM review of the reply; measured: +~2 s, no catches beyond the code checks
 
     # Infrastructure
     database_url: str = "postgresql+psycopg://emporio:emporio@localhost:5432/emporio"

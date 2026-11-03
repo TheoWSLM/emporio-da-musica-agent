@@ -382,7 +382,11 @@ class Assistant:
             except Exception as exc:
                 log.warning("output review failed: %s", exc)
         attempts = state.get("attempts", 0) + 1
-        update: dict[str, Any] = {"attempts": attempts, "validation_problems": problems}
+        update: dict[str, Any] = {
+            "attempts": attempts,
+            "validation_problems": problems,
+            "rejections": problems,
+        }
         if not problems:
             final = reply.model_copy(
                 update={"cited_sections": sorted(set(reply.cited_sections) | ctx.cited_sections)}
@@ -435,6 +439,7 @@ class Assistant:
             ],
             "cited_sections": state["final"].cited_sections,
             "validation_problems": state.get("validation_problems", []),
+            "rejections": state.get("rejections", []),
             "usage": state.get("usage", []),
         }
         await self._conversations.append(
