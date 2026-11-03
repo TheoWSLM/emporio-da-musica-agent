@@ -16,14 +16,6 @@ class ProductStatus(StrEnum):
     DISCONTINUED = "discontinued"
     COMING_SOON = "coming_soon"
 
-    @property
-    def label(self) -> str:
-        return {
-            ProductStatus.ACTIVE: "à venda",
-            ProductStatus.DISCONTINUED: "descontinuado",
-            ProductStatus.COMING_SOON: "em breve (ainda não disponível para venda)",
-        }[self]
-
 
 class Availability(StrEnum):
     IN_STOCK = "in_stock"

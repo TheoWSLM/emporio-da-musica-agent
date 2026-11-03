@@ -5,7 +5,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ClassifierProvider = Literal["auto", "openai", "jev"]
@@ -46,7 +46,6 @@ class Settings(BaseSettings):
     rate_limit_window_seconds: int = 600
     max_turns_per_conversation: int = 40
     rate_limit_global_per_day: int = 1000
-    max_message_chars: int = Field(2000, ge=100)
 
     release_id: str = "local"
     log_level: str = "INFO"

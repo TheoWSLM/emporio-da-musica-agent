@@ -9,8 +9,20 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel
 
-from emporio.assistant.tools.registry import Tool
 from emporio.conversation.domain.models import Message
+
+
+class ToolSpec(Protocol):
+    """What a model needs to know about a tool (the registry's Tool satisfies it)."""
+
+    @property
+    def name(self) -> str: ...
+
+    @property
+    def description(self) -> str: ...
+
+    @property
+    def args(self) -> type[BaseModel]: ...
 
 
 @dataclass(frozen=True)
@@ -40,7 +52,7 @@ class ChatModel(Protocol):
         context: str,
         user_message: str,
         transcript: Sequence[dict[str, Any]],
-        tools: Sequence[Tool],
+        tools: Sequence[ToolSpec],
         reply_schema: type[BaseModel],
         allow_tools: bool,
     ) -> ModelTurn: ...

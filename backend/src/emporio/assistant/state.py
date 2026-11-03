@@ -9,7 +9,6 @@ from typing import Annotated, Any, TypedDict
 from emporio.assistant.classification.assessment import InputAssessment
 from emporio.assistant.classification.decision import Decision
 from emporio.assistant.classification.ports import Classified
-from emporio.assistant.guardrails.heuristics import HeuristicResult
 from emporio.assistant.llm import ToolCall
 from emporio.assistant.reply import CustomerReply
 from emporio.assistant.tools.context import ToolContext
@@ -24,7 +23,6 @@ class TurnState(TypedDict, total=False):
     history: list[Message]
     previous_reply: str | None
 
-    heuristics: HeuristicResult
     classification: Classified[InputAssessment]
     decision: Decision
     prefetched: list[PolicyHit]
@@ -39,7 +37,6 @@ class TurnState(TypedDict, total=False):
 
     reply: CustomerReply | None
     attempts: int
-    validation_problems: list[str]
     rejections: Annotated[list[str], operator.add]
     """Every problem found across attempts (audit: shows what the validators actually catch)."""
     outcome: str

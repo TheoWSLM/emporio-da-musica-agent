@@ -27,8 +27,6 @@ LARGE_INSTRUMENT_NOTE = (
 class ShippingOption:
     carrier: str
     estimated_days: str
-    tracking: bool = True
-    insurance_included: bool = True
 
 
 @dataclass(frozen=True)
@@ -59,9 +57,7 @@ def estimate_shipping(city: str, order_value: Money) -> ShippingQuote:
             metro_region=True,
             fee=Money.zero() if free else METRO_FLAT_FEE,
             free_shipping=free,
-            options=(
-                ShippingOption("Motoboy próprio da loja", "1 a 3 dias úteis", tracking=False),
-            ),
+            options=(ShippingOption("Motoboy próprio da loja", "1 a 3 dias úteis"),),
             notes=("O cliente é contactado por telefone antes da entrega.",),
         )
     return ShippingQuote(

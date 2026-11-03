@@ -10,6 +10,9 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from emporio.assistant.reply import CustomerReply
 
+MAX_MESSAGE_CHARS = 2000
+"""Maximum customer message length (the edge also caps the request body)."""
+
 
 class CreateConversationResponse(BaseModel):
     conversation_id: uuid.UUID
@@ -18,7 +21,9 @@ class CreateConversationResponse(BaseModel):
 class SendMessageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    content: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2000)]
+    content: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_MESSAGE_CHARS)
+    ]
 
 
 class MessageView(BaseModel):

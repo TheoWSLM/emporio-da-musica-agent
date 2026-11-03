@@ -138,5 +138,5 @@ export function useChat() {
     }
   }
 
-  return { conversationId, messages, traces, busy, status, restore, send, newConversation };
+  return { messages, traces, busy, status, restore, send, newConversation };
 }

@@ -10,8 +10,7 @@ from openai import AsyncOpenAI
 from openai.lib._pydantic import to_strict_json_schema  # the only use of this SDK helper
 from pydantic import BaseModel
 
-from emporio.assistant.llm import ModelTurn, ToolCall
-from emporio.assistant.tools.registry import Tool
+from emporio.assistant.llm import ModelTurn, ToolCall, ToolSpec
 from emporio.conversation.domain.models import Message
 
 
@@ -21,7 +20,7 @@ def strict_json_schema(model: type[BaseModel]) -> dict[str, Any]:
     return to_strict_json_schema(model)
 
 
-def _tool_definition(tool: Tool) -> dict[str, Any]:
+def _tool_definition(tool: ToolSpec) -> dict[str, Any]:
     return {
         "type": "function",
         "name": tool.name,
@@ -48,7 +47,7 @@ class OpenAIChatModel:
         context: str,
         user_message: str,
         transcript: Sequence[dict[str, Any]],
-        tools: Sequence[Tool],
+        tools: Sequence[ToolSpec],
         reply_schema: type[BaseModel],
         allow_tools: bool,
     ) -> ModelTurn:

@@ -353,8 +353,13 @@ Each case checks:
 
 | Classifier | Passed | Security / scope / LGPD | Turn latency p50 / p95 | Classifier p50 / p95 | Agent calls / turn | Tone (1–5) |
 |---|---|---|---|---|---|---|
-| OpenAI `gpt-6-luna` (default) | **28/28** | 7/7 | 6.2 s / 8.9 s | 1.5 s / 2.0 s | 1.68 | 4.71 |
-| Jev (optional) | **28/28** | 7/7 | 5.3 s / 7.3 s | 0.18 s / 0.27 s | 1.75 | 4.64 |
+| OpenAI `gpt-6-luna` (default) | **28/28** | 7/7 | 6.5 s / 9.2 s | 1.6 s / 2.8 s | 1.64 | 4.62 |
+| Jev (optional) | **28/28** | 7/7 | 5.0 s / 8.3 s | 0.19 s / 0.28 s | 1.71 | 4.60 |
+
+The agent is generative, so results vary a little between runs. In one run of the Jev configuration, two policy
+cases (the 7-day regret window and the 90-day warranty) answered correctly but without the exact expected fact.
+They passed 5/5 each on a targeted rerun, and the full rerun above passed 28/28. In no run did an attack, a made-up
+figure or another customer's data get through.
 
 What the evaluation changed:
 - **The LLM output review became opt-in.** In the run that measured it, the default path's p50 was 8.1 s with the
@@ -385,7 +390,7 @@ a natural fit for the classifier port.
   `TYPESAFE_API_KEY`, nothing changes for the user.
 - **Result:**
   - Same accuracy on the golden set (28/28 each).
-  - Classification is **~9x faster** (175 ms vs 1.5 s p50). Because the classifier sits on the critical path,
+  - Classification is **~8x faster** (≈190 ms vs 1.6 s p50). Because the classifier sits on the critical path,
     that took 0.9–1.7 s off the median turn across the evaluation runs.
   - The OpenAI classifier blocked the role-play attempt outright; Jev let it through with a caution flag, and
     the agent refused.

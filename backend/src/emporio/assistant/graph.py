@@ -163,7 +163,7 @@ class Assistant:
                 "heuristic_flags": heuristics.flags,
             }
         )
-        return {"heuristics": heuristics, "classification": classified, "decision": decision}
+        return {"classification": classified, "decision": decision}
 
     async def policy_prefetch(self, state: TurnState) -> dict[str, Any]:
         """Runs in parallel with the classifier; whether the hits are used is decided after the join."""
@@ -292,7 +292,6 @@ class Assistant:
         attempts = state.get("attempts", 0) + 1
         update: dict[str, Any] = {
             "attempts": attempts,
-            "validation_problems": problems,
             "rejections": problems,
         }
         if not problems:
@@ -345,7 +344,6 @@ class Assistant:
                 for r in state.get("tool_results", [])
             ],
             "cited_sections": state["final"].cited_sections,
-            "validation_problems": state.get("validation_problems", []),
             "rejections": state.get("rejections", []),
             "usage": state.get("usage", []),
         }
