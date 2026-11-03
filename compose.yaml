@@ -59,5 +59,22 @@ services:
     cpus: 2
     pids_limit: 256
 
+  # Disposable database for the integration tests (`make test`). Never used by the app.
+  postgres-test:
+    image: pgvector/pgvector:pg16@sha256:0dd3149a06e4579a0d70d8fef9945636cd514005e7237deb27f9b67886f8dc4f
+    profiles: [dev]
+    environment:
+      POSTGRES_DB: emporio_test
+      POSTGRES_USER: emporio
+      POSTGRES_PASSWORD: emporio
+    tmpfs: [/var/lib/postgresql/data]
+    ports:
+      - "127.0.0.1:${TEST_DB_PORT:-15432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U emporio -d emporio_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
 networks:
   backend:
