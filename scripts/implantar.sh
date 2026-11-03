@@ -22,6 +22,9 @@ docker network inspect "$(value INGRESS_NETWORK)" >/dev/null || { echo "ingress 
 RELEASE_ID="$(git rev-parse --short HEAD)$(git diff --quiet || echo '-dirty')"
 export RELEASE_ID
 echo "$RELEASE_ID" > RELEASE
+# Persist it in .env so any later `docker compose` command (logs, restart, profiles) uses the same images.
+if grep -q '^RELEASE_ID=' .env; then sed -i.bak "s/^RELEASE_ID=.*/RELEASE_ID=${RELEASE_ID}/" .env && rm -f .env.bak; else echo "RELEASE_ID=${RELEASE_ID}" >> .env; fi
+chmod 600 .env
 echo "deploying release $RELEASE_ID"
 
 mkdir -p data/postgres

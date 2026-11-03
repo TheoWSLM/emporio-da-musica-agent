@@ -25,6 +25,8 @@ Besides the variables of `.env.example`:
 | `EDGE_PORT` | Local port for checks on `127.0.0.1` (pick one not used by the other apps). |
 | `PUBLIC_URL` | Public hostname, smoke-tested after each deploy. |
 | `NEIGHBOUR_HEALTH_URLS` | Comma-separated URLs of the other apps that must still answer 200 after the deploy. |
+| `COMPOSE_PROFILES` | `quick-tunnel` to publish through a Cloudflare Quick Tunnel (random `trycloudflare.com` URL, no domain needed). |
+| `RELEASE_ID` | Written by `scripts/implantar.sh` (commit of the deployed checkout). |
 
 ## First deploy
 
@@ -35,8 +37,13 @@ Besides the variables of `.env.example`:
    `docker compose -f compose.yaml -f deploy/homeserver/compose.server.yaml up -d --build --wait` and runs
    `scripts/smoke.py` locally, publicly and against the neighbour apps. It never restarts Docker, never
    prunes and never touches other containers.
-4. In the Cloudflare Zero Trust dashboard, add a **public hostname** to the existing tunnel:
-   `<hostname>` → `http://emporio-musica-caddy:80`. The connector is not restarted.
+4. Publish it, either way:
+   - **With a domain:** in the Cloudflare Zero Trust dashboard, add a public hostname to the existing tunnel:
+     `<hostname>` → `http://emporio-musica-caddy:80`. The connector is not restarted.
+   - **Without a domain (current demo):** set `COMPOSE_PROFILES=quick-tunnel`; the `quick-tunnel` container
+     prints a random `https://<words>.trycloudflare.com` URL (`docker compose -f compose.yaml -f
+     deploy/homeserver/compose.server.yaml logs quick-tunnel | grep trycloudflare`). The URL changes if that
+     container is recreated (e.g. after a host reboot).
 5. `python3 scripts/smoke.py https://<hostname> --check-rate-limit 20` once, to confirm the 429.
 
 ## Operate
