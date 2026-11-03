@@ -155,8 +155,6 @@ class ConversationRow(Base):
     channel: Mapped[str] = mapped_column(String(20), default="web")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    messages: Mapped[list[MessageRow]] = relationship(lazy="noload", order_by="MessageRow.id")
-
 
 class MessageRow(Base):
     __tablename__ = "messages"
