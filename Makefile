@@ -3,7 +3,7 @@ COMPOSE := docker compose
 BACKEND := cd backend &&
 
 .DEFAULT_GOAL := help
-.PHONY: help up down logs ps ingest chat test test-unit lint fmt typecheck eval examples reset
+.PHONY: help up down logs ps ingest data-report chat test test-unit lint fmt eval examples reset
 
 help: ## List available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -30,10 +30,14 @@ ps: ## Show service status
 ingest: ## Re-run the (idempotent) data ingestion
 	$(COMPOSE) run --rm ingest
 
+data-report: ## Regenerate reports/data-quality.md from data/raw
+	$(BACKEND) DATA_DIR=../data/raw uv run emporio data-report --output ../reports/data-quality.md
+
 chat: ## Talk to the agent in the terminal
 	$(COMPOSE) run --rm -it api emporio chat
 
-test: ## Unit + graph tests, plus integration tests when the DB is up
+test: ## Unit, graph and integration tests (starts a disposable test database)
+	$(COMPOSE) --profile dev up -d --wait postgres-test
 	$(BACKEND) uv run pytest -q
 
 test-unit: ## Fast tests only (no database, no network)

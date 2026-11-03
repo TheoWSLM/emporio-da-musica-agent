@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev --no-ins
 FROM base AS runtime
 RUN useradd --uid 1000 --create-home app
 COPY --from=deps /app/.venv /app/.venv
-COPY backend/pyproject.toml backend/uv.lock ./
+COPY backend/pyproject.toml backend/uv.lock backend/alembic.ini ./
 COPY backend/src ./src
 COPY backend/migrations ./migrations
 COPY data/raw ./data/raw
