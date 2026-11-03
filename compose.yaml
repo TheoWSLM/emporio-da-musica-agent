@@ -67,11 +67,31 @@ services:
       timeout: 5s
       start_period: 20s
       retries: 3
-    ports:
-      - "127.0.0.1:${API_DEBUG_PORT:-18092}:8000"
     mem_limit: 768m
     cpus: 2
     pids_limit: 256
+
+  # Edge: serves the Vue build and proxies /api to the API. The only published port.
+  emporio-musica-caddy:
+    <<: *hardening
+    image: emporio-musica-web:${RELEASE_ID:-local}
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    depends_on:
+      api: {condition: service_healthy}
+    ports:
+      - "127.0.0.1:${EDGE_PORT:-18082}:80"
+    networks: [backend]
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1/api/health]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+    mem_limit: 128m
+    cpus: 1
 
   # Disposable database for the integration tests (`make test`). Never used by the app.
   postgres-test:
