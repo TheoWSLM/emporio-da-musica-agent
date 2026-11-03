@@ -1,0 +1,21 @@
+# Server override: joins ONLY the edge (Caddy) to the existing ingress network that the shared
+# Cloudflare tunnel connector is attached to. The API and Postgres stay on the app's private network.
+#   docker compose -f compose.yaml -f deploy/homeserver/compose.server.yaml up -d
+services:
+  emporio-musica-caddy:
+    networks:
+      backend:
+      ingress:
+        # Unique alias: the tunnel resolves the origin by this name (a generic "caddy" alias would
+        # collide with other apps on the same network).
+        aliases: [emporio-musica-caddy]
+
+  api:
+    environment:
+      # The demo is public: the API only trusts X-Forwarded-For because it is reachable solely through Caddy.
+      LOG_LEVEL: INFO
+
+networks:
+  ingress:
+    external: true
+    name: ${INGRESS_NETWORK:?set INGRESS_NETWORK in .env (the network of the existing tunnel connector)}
