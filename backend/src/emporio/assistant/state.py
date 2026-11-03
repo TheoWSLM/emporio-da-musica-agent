@@ -10,6 +10,7 @@ from emporio.assistant.classification.assessment import InputAssessment
 from emporio.assistant.classification.decision import Decision
 from emporio.assistant.classification.ports import Classified
 from emporio.assistant.guardrails.heuristics import HeuristicResult
+from emporio.assistant.llm import ToolCall
 from emporio.assistant.reply import CustomerReply
 from emporio.assistant.tools.context import ToolContext
 from emporio.assistant.tools.registry import ToolResult
@@ -31,7 +32,7 @@ class TurnState(TypedDict, total=False):
     tool_context: ToolContext
     items: Annotated[list[dict[str, Any]], operator.add]
     """Responses-API input items produced during this turn (model outputs, tool outputs, feedback)."""
-    pending_calls: list[dict[str, Any]]
+    pending_calls: list[ToolCall]
     tool_results: Annotated[list[ToolResult], operator.add]
     model_rounds: int
     usage: Annotated[list[dict[str, int]], operator.add]

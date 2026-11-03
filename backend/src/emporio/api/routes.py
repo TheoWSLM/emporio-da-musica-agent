@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import uuid
 from collections.abc import AsyncIterator
@@ -12,6 +11,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import TypeAdapter, ValidationError
 from sse_starlette.sse import EventSourceResponse
 
+from emporio.api.runtime import Runtime
 from emporio.api.schemas import (
     ConversationView,
     CreateConversationResponse,
@@ -29,8 +29,9 @@ EVENT = TypeAdapter[Any](SseEvent)
 UI_DETAIL_KEYS = ("outcome", "classification", "route", "tools", "cited_sections")
 
 
-def _runtime(request: Request) -> Any:
-    return request.app.state.runtime
+def _runtime(request: Request) -> Runtime:
+    runtime: Runtime = request.app.state.runtime
+    return runtime
 
 
 @router.get("/config", response_model=PublicConfig, tags=["meta"])
@@ -134,8 +135,3 @@ async def send_message(
             yield {"event": "error", "data": error.model_dump_json()}
 
     return EventSourceResponse(events(), ping=15)
-
-
-def sse_lines_to_events(text: str) -> list[dict[str, Any]]:
-    """Test/CLI helper: parses an SSE body into the event payloads."""
-    return [json.loads(line[5:].strip()) for line in text.splitlines() if line.startswith("data:")]

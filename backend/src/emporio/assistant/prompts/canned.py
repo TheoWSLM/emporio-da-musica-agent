@@ -1,5 +1,8 @@
 """Fixed replies used when the agent must not (or need not) be called."""
 
+from emporio.conversation.domain.models import RESPONSE_SLA
+from emporio.store.domain.info import EMPORIO
+
 BLOCKED = (
     "Desculpe, nisso eu não posso ajudar. 🙂 Sou a Lia, assistente da Empório da Música, e posso te ajudar "
     "com instrumentos, preços, pedidos, pagamentos, trocas, entregas e informações da loja. Como posso ajudar?"
@@ -10,8 +13,8 @@ OFF_TOPIC = (
 )
 FALLBACK = (
     "Desculpe, não consegui montar uma resposta confiável agora e prefiro não te passar nenhuma informação "
-    "errada. Posso registrar seu atendimento para a nossa equipe, que retorna em até 24 horas úteis, ou você "
-    "pode falar com a gente pelo WhatsApp (67) 3321-4500. Quer que eu registre?"
+    f"errada. Posso registrar seu atendimento para a nossa equipe, que retorna em até {RESPONSE_SLA}, ou "
+    f"você pode falar com a gente pelo WhatsApp {EMPORIO.whatsapp}. Quer que eu registre?"
 )
 SUGGESTIONS = [
     "Quais violões vocês têm até R$ 1.000?",

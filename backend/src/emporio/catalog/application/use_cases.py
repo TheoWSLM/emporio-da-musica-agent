@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import re
-import unicodedata
 from dataclasses import dataclass, field
 from decimal import Decimal
 
@@ -21,66 +19,12 @@ from emporio.catalog.domain.installments import (
     combined_payment_allowed,
     installment_options,
 )
-from emporio.catalog.domain.models import Category, Product, Promotion
-from emporio.catalog.domain.pricing import PriceQuote, quote_price
+from emporio.catalog.domain.models import Product, Promotion
+from emporio.catalog.domain.pricing import PIX_DISCOUNT_PERCENT, PriceQuote, quote_price
+from emporio.catalog.domain.scope import detect_accessory, resolve_categories
 from emporio.knowledge.application.ports import Embedder
 from emporio.shared.errors import NotFoundError
 from emporio.shared.money import Money
-
-# Accessories the store explicitly does not sell (manual §1 and §7.1).
-ACCESSORY_TERMS = (
-    "corda",
-    "cordas",
-    "encordoamento",
-    "palheta",
-    "palhetas",
-    "cabo",
-    "cabos",
-    "case",
-    "cases",
-    "bag",
-    "capa",
-    "pedal",
-    "pedais",
-    "pedaleira",
-    "amplificador",
-    "amplificadores",
-    "amp",
-    "caixa de som",
-    "afinador",
-    "estante",
-    "suporte",
-    "baqueta",
-    "baquetas",
-)
-# Words that look like accessories but describe instruments ("cordas orquestrais", "violão de 7 cordas").
-_INSTRUMENT_CONTEXT = re.compile(
-    r"cordas? (orquestr|de nylon|de a[cç]o)|\d+ cordas|cordas? orquestrais"
-)
-
-
-def _ascii(text: str) -> str:
-    return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().lower()
-
-
-def detect_accessory(text: str) -> str | None:
-    normalized = _ascii(text)
-    if _INSTRUMENT_CONTEXT.search(normalized):
-        return None
-    for term in ACCESSORY_TERMS:
-        if re.search(rf"\b{re.escape(_ascii(term))}\b", normalized):
-            return term
-    return None
-
-
-def resolve_categories(text: str, categories: list[Category]) -> list[Category]:
-    normalized = _ascii(text)
-    found = []
-    for category in categories:
-        terms = (category.name, *category.synonyms)
-        if any(re.search(rf"\b{re.escape(_ascii(term))}\b", normalized) for term in terms):
-            found.append(category)
-    return found
 
 
 @dataclass(frozen=True)
@@ -212,7 +156,7 @@ class CatalogService:
             pix_discount = offer.quote.pix_discount_applies
         elif amount is not None:
             card_total = Money.of(amount)
-            pix_total = card_total.minus_percent(5)
+            pix_total = card_total.minus_percent(PIX_DISCOUNT_PERCENT)
             pix_discount = True
         else:
             raise ValueError("informe product_id ou amount")

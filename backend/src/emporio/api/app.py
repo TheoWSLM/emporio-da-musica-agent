@@ -1,30 +1,19 @@
-"""FastAPI application factory."""
+"""FastAPI application factory (served with `uvicorn --factory emporio.api.app:create_app`)."""
 
 from __future__ import annotations
 
 import logging
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
-from dataclasses import dataclass
-from typing import Any
 
 from fastapi import FastAPI
 
 from emporio.api.rate_limit import DailyBudget, SlidingWindowLimiter
 from emporio.api.routes import router
+from emporio.api.runtime import Runtime
 from emporio.config import Settings, get_settings
 
 log = logging.getLogger(__name__)
-
-
-@dataclass
-class Runtime:
-    settings: Settings
-    assistant: Any
-    conversations: Any
-    ip_limiter: SlidingWindowLimiter
-    daily_budget: DailyBudget
-    close: Callable[[], Any]
 
 
 def _default_runtime(settings: Settings) -> Runtime:
@@ -69,6 +58,3 @@ def create_app(runtime_factory: Callable[[Settings], Runtime] = _default_runtime
 
     app.include_router(router)
     return app
-
-
-app = create_app()

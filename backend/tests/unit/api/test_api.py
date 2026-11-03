@@ -7,9 +7,9 @@ from fastapi.testclient import TestClient
 
 from emporio.api.app import Runtime, create_app
 from emporio.api.rate_limit import DailyBudget, SlidingWindowLimiter
-from emporio.api.routes import sse_lines_to_events
 from emporio.config import Settings
 from tests.graph.fakes import MemoryConversations
+from tests.support import sse_events
 
 REPLY = {
     "message": "Olá! Como posso ajudar?",
@@ -73,7 +73,7 @@ def test_message_is_answered_as_typed_sse_events(client: TestClient) -> None:
     response = client.post(f"/conversations/{cid}/messages", json={"content": "oi"})
 
     assert response.headers["content-type"].startswith("text/event-stream")
-    events = sse_lines_to_events(response.text)
+    events = sse_events(response.text)
     assert [e["type"] for e in events] == ["status", "message", "done"]
     assert events[1]["reply"]["message"] == REPLY["message"]
 
@@ -122,7 +122,7 @@ def test_daily_budget_and_turn_limit() -> None:
 def test_failures_become_an_error_event() -> None:
     for client in client_for(fail=True):
         cid = start(client)
-        events = sse_lines_to_events(
+        events = sse_events(
             client.post(f"/conversations/{cid}/messages", json={"content": "oi"}).text
         )
         assert events[-1]["type"] == "error"

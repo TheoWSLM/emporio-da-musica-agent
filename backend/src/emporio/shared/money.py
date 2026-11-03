@@ -27,15 +27,6 @@ class Money:
     def zero(cls) -> Money:
         return cls(Decimal(0))
 
-    def __add__(self, other: Money) -> Money:
-        return Money(self.amount + other.amount)
-
-    def __sub__(self, other: Money) -> Money:
-        return Money(self.amount - other.amount)
-
-    def times(self, factor: Decimal | int) -> Money:
-        return Money(self.amount * _to_decimal(factor))
-
     def divided_by(self, parts: int) -> Money:
         return Money(self.amount / parts)
 

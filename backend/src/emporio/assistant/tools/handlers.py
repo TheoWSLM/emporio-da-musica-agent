@@ -34,18 +34,19 @@ from emporio.assistant.tools.schemas import (
     View,
 )
 from emporio.catalog.application.use_cases import ProductOffer, SearchCriteria
-from emporio.catalog.domain.installments import max_installments
+from emporio.catalog.domain.installments import COMBINED_PAYMENT_THRESHOLD, max_installments
 from emporio.catalog.domain.models import Promotion
 from emporio.catalog.domain.pricing import PIX_DISCOUNT_PERCENT
+from emporio.catalog.domain.specs import readable_specs
 from emporio.conversation.domain.models import RESPONSE_SLA, TicketType
-from emporio.ingestion.enrichment import readable_specs
 from emporio.orders.application.use_cases import OrderLookup, Verification
 from emporio.orders.domain.models import OrderStatus
 from emporio.orders.domain.returns import ReturnOutcome, ReturnReason
 from emporio.shared.errors import NotFoundError
 from emporio.shared.money import Money
-from emporio.store.domain.hours import WEEKDAY_NAMES
+from emporio.store.domain.hours import WEEKDAY_NAMES, describe_weekly_hours
 from emporio.store.domain.info import EMPORIO
+from emporio.store.domain.shipping import FREE_SHIPPING_THRESHOLD
 
 _VERIFY_MSG = "Para consultar o pedido preciso confirmar a identidade: peça o e-mail ou o telefone cadastrado na compra."
 _FAILED_MSG = (
@@ -173,9 +174,10 @@ async def calculate_payment_options(args: PaymentOptionsArgs, ctx: ToolContext) 
         ],
         requested_installments=requested,
         combined_payment=(
-            "permitido (ex.: PIX + cartão), pois a compra é acima de R$ 2.000,00"
+            f"permitido (ex.: PIX + cartão), pois a compra é acima de {COMBINED_PAYMENT_THRESHOLD}"
             if options.combined_payment_allowed
-            else "não disponível: combinar formas de pagamento só é permitido acima de R$ 2.000,00"
+            else "não disponível: combinar formas de pagamento só é permitido acima de "
+            f"{COMBINED_PAYMENT_THRESHOLD}"
         ),
         other_methods=[
             "cartão de débito à vista (todas as bandeiras)",
@@ -255,9 +257,9 @@ async def estimate_shipping(args: ShippingArgs, ctx: ToolContext) -> View:
     if quote.fee is None:
         fee = "calculado pelo CEP de destino, peso e dimensões (não há valor fixo)"
     elif quote.free_shipping:
-        fee = "grátis (pedido acima de R$ 500,00)"
+        fee = f"grátis (pedido acima de {FREE_SHIPPING_THRESHOLD})"
     else:
-        fee = f"{quote.fee.format()} (taxa fixa para pedidos de até R$ 500,00)"
+        fee = f"{quote.fee} (taxa fixa para pedidos de até {FREE_SHIPPING_THRESHOLD})"
     return ShippingView(
         city=quote.city,
         metro_region=quote.metro_region,
@@ -283,11 +285,7 @@ async def get_store_status(args: StoreStatusArgs, ctx: ToolContext) -> View:
         is_open=status.is_open,
         closed_reason=status.closed_reason,
         next_opening=next_opening,
-        hours=[
-            "segunda a sexta: 09:00 às 18:00",
-            "sábado: 09:00 às 13:00",
-            "domingos e feriados: fechado",
-        ],
+        hours=describe_weekly_hours(),
         address=EMPORIO.address,
         phone=EMPORIO.phone,
         whatsapp=EMPORIO.whatsapp,

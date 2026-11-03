@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
-
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -20,11 +18,8 @@ class SqlPolicyRetriever:
         self._sessions = sessions
         self._embedder = embedder
 
-    async def search(
-        self, query: str, k: int = 4, embedding: Sequence[float] | None = None
-    ) -> list[PolicyHit]:
-        if embedding is None:
-            embedding = (await self._embedder.embed([query]))[0]
+    async def search(self, query: str, k: int = 4) -> list[PolicyHit]:
+        [embedding] = await self._embedder.embed([query])
         distance = PolicyChunkRow.embedding.cosine_distance(list(embedding))
         tsquery = func.websearch_to_tsquery("portuguese", query)
         rank = func.ts_rank_cd(PolicyChunkRow.content_tsv, tsquery)

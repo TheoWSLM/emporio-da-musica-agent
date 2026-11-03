@@ -13,8 +13,4 @@ class Embedder(Protocol):
 
 
 class PolicyRetriever(Protocol):
-    async def search(
-        self, query: str, k: int = 4, embedding: Sequence[float] | None = None
-    ) -> list[PolicyHit]:
-        """Hybrid search. Pass a precomputed query embedding to avoid embedding the text twice."""
-        ...
+    async def search(self, query: str, k: int = 4) -> list[PolicyHit]: ...

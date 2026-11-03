@@ -13,8 +13,7 @@ from emporio.assistant.tools.context import ToolContext
 from emporio.assistant.tools.registry import execute
 from emporio.container import build_services
 from emporio.ingestion.pipeline import ingest_embeddings
-from emporio.knowledge.infrastructure.embedders import HashingEmbedder
-from emporio.shared.clock import FixedClock
+from tests.support import FixedClock, HashingEmbedder
 
 from .conftest import DATA_DIR
 

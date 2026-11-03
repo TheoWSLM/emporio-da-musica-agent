@@ -288,14 +288,23 @@ merge. The Pydantic objects travel *inside* it.
 
 ### 11. DDD and SOLID — and where I kept it light
 - **What follows the rules:**
-  - Ports are small `Protocol`s (`ProductReader`, `OrderReader`, `PolicyRetriever`, `InputClassifier`, `Clock`).
-  - Each use case is one intention.
+  - Ports are small `Protocol`s (`ProductReader`, `OrderReader`, `PolicyRetriever`, `InputClassifier`,
+    `ChatModel`, `Clock`). The agent graph only knows the `ChatModel` port: the OpenAI Responses adapter
+    ([`openai_chat.py`](backend/src/emporio/assistant/openai_chat.py)) is the single place that knows the SDK and
+    its message format.
+  - The agent node only orchestrates: the prompt context is a pure function
+    ([`context.py`](backend/src/emporio/assistant/context.py)) and the output checks live in an `OutputValidator`.
+  - Business rules live in the domain, including the store's scope (accessories and category synonyms). The
+    texts shown to the model are derived from the domain constants (thresholds, opening hours), never retyped.
   - New providers are new adapters (OpenAI and Jev share one contract and one suite of contract tests).
   - The composition root is the only place that knows the concrete classes.
 - **Where I chose not to add ceremony:**
   - one ORM module for the whole small schema;
   - no dependency-injection framework;
-  - the store context's use cases are thin by design.
+  - use cases are grouped in one service class per context (`CatalogService`, `OrderService`, `StoreService`),
+    where each public method is one intention, instead of one class per use case;
+  - the PT-BR labels and explanations the customer reads sit next to the domain enums and rules that produce
+    them, instead of in a separate translation layer.
 
 ### 12. Running: Docker Compose, not Kubernetes
 - **Why:** one command for the evaluator, and the same `compose.yaml` runs locally and on the server (where a
@@ -344,18 +353,19 @@ Each case checks:
 
 | Classifier | Passed | Security / scope / LGPD | Turn latency p50 / p95 | Classifier p50 / p95 | Agent calls / turn | Tone (1–5) |
 |---|---|---|---|---|---|---|
-| OpenAI `gpt-6-luna` (default) | **28/28** | 7/7 | 6.7 s / 8.5 s | 1.6 s / 2.2 s | 1.68 | 4.58 |
-| Jev (optional) | **28/28** | 7/7 | 5.0 s / 6.9 s | 0.18 s / 0.25 s | 1.75 | 4.68 |
+| OpenAI `gpt-6-luna` (default) | **28/28** | 7/7 | 6.2 s / 8.9 s | 1.5 s / 2.0 s | 1.68 | 4.71 |
+| Jev (optional) | **28/28** | 7/7 | 5.3 s / 7.3 s | 0.18 s / 0.27 s | 1.75 | 4.64 |
 
 What the evaluation changed:
-- **The LLM output review became opt-in.** With it on, the default path's p50 was 8.1 s; with it off, 6.7 s,
+- **The LLM output review became opt-in.** In the run that measured it, the default path's p50 was 8.1 s with the
+  review on and 6.7 s with it off,
   with no loss in results.
 - **A security case was rewritten.** Blocking a role-play discount request and safely refusing it are both
   correct, so the case now accepts either.
 - **The prompt-leak detector was recalibrated.** It had flagged "o número do pedido e o e-mail" (normal service
   language), so phrases that also appear in public text no longer count.
 
-The full per-case table is in [`reports/eval-report.md`](reports/eval-report.md). The automated tests (136:
+The full per-case table is in [`reports/eval-report.md`](reports/eval-report.md). The automated tests (157:
 domain rules, ingestion, chunking, retrieval, every tool, classifier contract, graph routing and parallelism,
 API) run in CI without paid API calls.
 
@@ -375,8 +385,8 @@ a natural fit for the classifier port.
   `TYPESAFE_API_KEY`, nothing changes for the user.
 - **Result:**
   - Same accuracy on the golden set (28/28 each).
-  - Classification is **~9x faster** (178 ms vs 1.6 s p50), which cuts about 1.7 s from every turn because the
-    classifier sits on the critical path.
+  - Classification is **~9x faster** (175 ms vs 1.5 s p50). Because the classifier sits on the critical path,
+    that took 0.9–1.7 s off the median turn across the evaluation runs.
   - The OpenAI classifier blocked the role-play attempt outright; Jev let it through with a caution flag, and
     the agent refused.
 - **Conclusion:** a dedicated decision model is a real latency win for the guard layer. Keeping it behind a port

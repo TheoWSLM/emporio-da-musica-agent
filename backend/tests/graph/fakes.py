@@ -6,59 +6,27 @@ import asyncio
 import json
 import uuid
 from collections.abc import Sequence
-from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo
 
 from emporio.assistant.classification.assessment import InputAssessment, OutputAssessment
 from emporio.assistant.classification.ports import Classified
+from emporio.assistant.llm import ModelTurn, ToolCall
 from emporio.assistant.tools.context import Services
 from emporio.conversation.domain.models import Message, SupportTicket, TicketType
 from emporio.knowledge.domain.models import PolicyHit
-from emporio.shared.clock import FixedClock
 from emporio.store.application.use_cases import StoreService
+from tests.support import FixedClock
 
 CLOCK = FixedClock(datetime(2026, 11, 4, 10, 0, tzinfo=ZoneInfo("America/Campo_Grande")))
 
 
-@dataclass
-class _Item:
-    data: dict[str, Any]
-
-    @property
-    def type(self) -> str:
-        return str(self.data["type"])
-
-    def model_dump(self, exclude_none: bool = False) -> dict[str, Any]:
-        return dict(self.data)
+def tool_call(name: str, arguments: dict[str, Any], call_id: str = "c1") -> ToolCall:
+    return ToolCall(call_id, name, json.dumps(arguments))
 
 
-@dataclass
-class _Usage:
-    input_tokens: int = 10
-    output_tokens: int = 5
-
-
-@dataclass
-class _Response:
-    output: list[_Item]
-    output_text: str = ""
-    usage: _Usage = field(default_factory=_Usage)
-
-
-def tool_call(name: str, arguments: dict[str, Any], call_id: str = "c1") -> _Item:
-    return _Item(
-        {
-            "type": "function_call",
-            "name": name,
-            "arguments": json.dumps(arguments),
-            "call_id": call_id,
-        }
-    )
-
-
-def final(message: str) -> _Response:
+def final(message: str) -> ModelTurn:
     reply = {
         "message": message,
         "cited_sections": [],
@@ -66,26 +34,29 @@ def final(message: str) -> _Response:
         "suggested_replies": [],
     }
     text = json.dumps(reply, ensure_ascii=False)
-    return _Response([_Item({"type": "message", "content": text})], output_text=text)
+    return ModelTurn([{"role": "assistant", "content": text}], [], text, {"input": 10, "output": 5})
 
 
-def calls(*items: _Item) -> _Response:
-    return _Response(list(items))
+def calls(*tool_calls: ToolCall) -> ModelTurn:
+    return ModelTurn([{"call": c.call_id} for c in tool_calls], list(tool_calls), "")
 
 
-class ScriptedResponses:
-    def __init__(self, script: Sequence[_Response]) -> None:
+class ScriptedChatModel:
+    """Implements the ChatModel port with a fixed script and records every request."""
+
+    def __init__(self, script: Sequence[ModelTurn]) -> None:
         self._script = list(script)
         self.requests: list[dict[str, Any]] = []
 
-    async def create(self, **request: Any) -> _Response:
-        self.requests.append(request)
+    async def respond(self, **request: Any) -> ModelTurn:
+        self.requests.append({**request, "transcript": list(request["transcript"])})
         return self._script.pop(0)
 
+    def tool_result(self, call: ToolCall, output: str) -> dict[str, Any]:
+        return {"tool_result": call.call_id, "output": output}
 
-class ScriptedClient:
-    def __init__(self, script: Sequence[_Response]) -> None:
-        self.responses = ScriptedResponses(script)
+    def feedback(self, text: str) -> dict[str, Any]:
+        return {"feedback": text}
 
 
 def assessment(**overrides: Any) -> InputAssessment:

@@ -39,3 +39,13 @@ def test_holiday_reason_is_reported() -> None:
 
     assert status.closed_reason is not None and "Finados" in status.closed_reason
     assert status.next_opening == at(2026, 11, 3, 9, 0)
+
+
+def test_weekly_hours_are_described_from_the_schedule() -> None:
+    from emporio.store.domain.hours import describe_weekly_hours
+
+    assert describe_weekly_hours() == [
+        "segunda a sexta: 09:00 às 18:00",
+        "sábado: 09:00 às 13:00",
+        "domingos e feriados: fechado",
+    ]

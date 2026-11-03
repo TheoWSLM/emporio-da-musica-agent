@@ -1,14 +1,14 @@
-"""Tool registry: name, model-facing description, strict schema and handler."""
+"""Tool registry: name, model-facing description, argument model and handler."""
 
 from __future__ import annotations
 
 import json
+import logging
 import time
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Any
 
-from openai.lib._pydantic import to_strict_json_schema
 from pydantic import ValidationError
 
 from emporio.assistant.tools import handlers
@@ -28,6 +28,8 @@ from emporio.assistant.tools.schemas import (
     View,
 )
 
+log = logging.getLogger(__name__)
+
 Handler = Callable[[Any, ToolContext], Awaitable[View]]
 
 
@@ -37,15 +39,6 @@ class Tool:
     description: str
     args: type[Args]
     handler: Handler
-
-    def openai_definition(self) -> dict[str, Any]:
-        return {
-            "type": "function",
-            "name": self.name,
-            "description": self.description,
-            "parameters": to_strict_json_schema(self.args),
-            "strict": True,
-        }
 
 
 @dataclass(frozen=True)
@@ -140,6 +133,13 @@ async def execute(name: str, raw_arguments: str, call_id: str, ctx: ToolContext)
         view = ErrorView(error=f"invalid arguments: {exc.errors(include_url=False)}")
     except json.JSONDecodeError:
         view = ErrorView(error="arguments are not valid JSON")
+    except (
+        Exception
+    ):  # infrastructure failure: report it to the model instead of failing the whole turn
+        log.exception("tool %s failed", name)
+        view = ErrorView(
+            error="temporary failure while consulting the system; do not guess the data"
+        )
     elapsed = int((time.perf_counter() - started) * 1000)
     return ToolResult(
         call_id=call_id,

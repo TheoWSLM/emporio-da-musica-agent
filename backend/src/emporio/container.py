@@ -11,6 +11,9 @@ from emporio.assistant.classification.jev import JevClient, JevInputClassifier, 
 from emporio.assistant.classification.openai import OpenAIInputClassifier, OpenAIOutputClassifier
 from emporio.assistant.classification.ports import InputClassifier, OutputClassifier
 from emporio.assistant.graph import AgentConfig, Assistant
+from emporio.assistant.guardrails.output_validator import OutputValidator
+from emporio.assistant.openai_chat import OpenAIChatModel
+from emporio.assistant.prompts.system import new_canary, system_prompt
 from emporio.assistant.tools.context import Services
 from emporio.catalog.application.use_cases import CatalogService
 from emporio.catalog.infrastructure.repositories import (
@@ -56,11 +59,7 @@ def build_services(
 class Container:
     settings: Settings
     engine: AsyncEngine
-    sessions: async_sessionmaker[AsyncSession]
     openai: AsyncOpenAI
-    embedder: Embedder
-    clock: Clock
-    services: Services
     conversations: SqlConversationStore
     assistant: Assistant
     jev: JevClient | None = None
@@ -91,29 +90,34 @@ class Container:
             )
             input_classifier = JevInputClassifier(jev, fallback=input_classifier)
             output_classifier = JevOutputClassifier(jev, fallback=output_classifier)
+        canary = new_canary()
+        prompt = system_prompt(canary)
         assistant = Assistant(
-            client=client,
-            services=services,
-            conversations=conversations,
-            input_classifier=input_classifier,
-            output_classifier=output_classifier,
-            config=AgentConfig(
+            model=OpenAIChatModel(
+                client,
                 model=settings.agent_model,
                 reasoning_effort=settings.agent_reasoning_effort,
                 max_output_tokens=settings.agent_max_output_tokens,
+            ),
+            system_prompt=prompt,
+            services=services,
+            conversations=conversations,
+            input_classifier=input_classifier,
+            validator=OutputValidator(
+                system_prompt=prompt,
+                canary=canary,
+                reviewer=output_classifier,
+                review_enabled=settings.output_review,
+            ),
+            config=AgentConfig(
                 max_tool_rounds=settings.agent_max_tool_rounds,
                 history_window=settings.history_window,
-                output_review=settings.output_review,
             ),
         )
         return cls(
             settings=settings,
             engine=engine,
-            sessions=sessions,
             openai=client,
-            embedder=embedder,
-            clock=clock,
-            services=services,
             conversations=conversations,
             assistant=assistant,
             jev=jev,

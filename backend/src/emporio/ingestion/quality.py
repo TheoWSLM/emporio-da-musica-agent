@@ -21,49 +21,40 @@ def _ascii(text: str) -> str:
     return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().lower()
 
 
-def analyze(dataset: RawDataset) -> list[Finding]:
-    findings: list[Finding] = []
-    products = {p.product_id: p for p in dataset.products}
-    customers = {c.customer_id: c for c in dataset.customers}
-    categories = {c.category_id: c for c in dataset.categories}
+def _invalid_rows(data: RawDataset) -> list[Finding]:
+    return [
+        Finding(f"Invalid row in {e.file}:{e.line}", e.message, "Row skipped at ingestion.")
+        for e in data.errors
+    ]
 
-    for error in dataset.errors:
-        findings.append(
-            Finding(
-                f"Invalid row in {error.file}:{error.line}",
-                error.message,
-                "Row skipped at ingestion.",
-            )
-        )
 
-    per_category = Counter(
-        categories[p.category_id].name if p.category_id in categories else "?"
-        for p in products.values()
-    )
-    empty = [c.name for c in categories.values() if per_category[c.name] == 0]
-    findings.append(
+def _catalog_coverage(data: RawDataset) -> list[Finding]:
+    names = {c.category_id: c.name for c in data.categories}
+    per_category = Counter(names.get(p.category_id, "?") for p in data.products)
+    empty = [name for name in names.values() if per_category[name] == 0]
+    detail = ", ".join(f"{name}: {count}" for name, count in per_category.most_common())
+    detail += f". Categories without products: {', '.join(empty)}." if empty else "."
+    return [
         Finding(
             "Uneven catalog coverage",
-            ", ".join(f"{name}: {count}" for name, count in per_category.most_common())
-            + (f". Categories without products: {', '.join(empty)}." if empty else "."),
+            detail,
             "Searches in empty categories answer honestly that there is nothing in the catalog.",
         )
-    )
+    ]
 
-    status_count = Counter(p.status for p in products.values())
-    special = [f"{p.product_id} ({p.status})" for p in products.values() if p.status != "active"]
-    findings.append(
+
+def _product_status(data: RawDataset) -> list[Finding]:
+    status_count = Counter(p.status for p in data.products)
+    special = [f"{p.product_id} ({p.status})" for p in data.products if p.status != "active"]
+    findings = [
         Finding(
             "Non-active products",
             f"Status distribution: {dict(status_count)}. Non-active: {', '.join(special)}.",
             "Discontinued and coming-soon products are never offered for sale; the agent suggests similar in-stock items.",
         )
-    )
-
+    ]
     zero_active = [
-        str(p.product_id)
-        for p in products.values()
-        if p.status == "active" and p.stock_quantity == 0
+        str(p.product_id) for p in data.products if p.status == "active" and p.stock_quantity == 0
     ]
     if zero_active:
         findings.append(
@@ -73,13 +64,17 @@ def analyze(dataset: RawDataset) -> list[Finding]:
                 "Availability is derived from stock, not from status: shown as temporarily out of stock.",
             )
         )
+    return findings
 
+
+def _promotions(data: RawDataset) -> list[Finding]:
     by_product: dict[int, list[Decimal]] = defaultdict(list)
     active_by_product: dict[int, list[Decimal]] = defaultdict(list)
-    for promo in dataset.promotions:
+    for promo in data.promotions:
         by_product[promo.product_id].append(promo.discount_percent)
         if promo.is_active:
             active_by_product[promo.product_id].append(promo.discount_percent)
+    findings: list[Finding] = []
     repeated = {pid: v for pid, v in by_product.items() if len(v) > 1}
     if repeated:
         findings.append(
@@ -105,27 +100,36 @@ def analyze(dataset: RawDataset) -> list[Finding]:
             "Promotions have no validity dates: `is_active` is taken as the source of truth.",
         )
     )
+    return findings
 
-    orphan_promos = [p.promotion_id for p in dataset.promotions if p.product_id not in products]
+
+def _broken_references(data: RawDataset) -> list[Finding]:
+    products = {p.product_id for p in data.products}
+    customers = {c.customer_id for c in data.customers}
+    orphan_promos = [p.promotion_id for p in data.promotions if p.product_id not in products]
     orphan_items = [
-        f"{i.order_id}->{i.product_id}" for i in dataset.order_items if i.product_id not in products
+        f"{i.order_id}->{i.product_id}" for i in data.order_items if i.product_id not in products
     ]
-    orphan_orders = [o.order_id for o in dataset.orders if o.customer_id not in customers]
-    if orphan_promos or orphan_items or orphan_orders:
-        findings.append(
-            Finding(
-                "Broken references",
-                f"promotions {orphan_promos}, order items {orphan_items}, orders {orphan_orders}",
-                "Rows with broken references are skipped at ingestion.",
-            )
+    orphan_orders = [o.order_id for o in data.orders if o.customer_id not in customers]
+    if not (orphan_promos or orphan_items or orphan_orders):
+        return []
+    return [
+        Finding(
+            "Broken references",
+            f"promotions {orphan_promos}, order items {orphan_items}, orders {orphan_orders}",
+            "Rows with broken references are skipped at ingestion.",
         )
+    ]
 
+
+def _orders(data: RawDataset) -> list[Finding]:
+    products = {p.product_id: p for p in data.products}
     items_by_order: dict[int, list[tuple[int, int]]] = defaultdict(list)
-    for item in dataset.order_items:
+    for item in data.order_items:
         items_by_order[item.order_id].append((item.product_id, item.quantity))
     mismatches: list[str] = []
     non_sellable: list[str] = []
-    for order in dataset.orders:
+    for order in data.orders:
         items = items_by_order.get(order.order_id, [])
         if not items:
             mismatches.append(f"order {order.order_id}: no items")
@@ -137,11 +141,12 @@ def analyze(dataset: RawDataset) -> list[Finding]:
             mismatches.append(
                 f"order {order.order_id}: total {order.total_brl} vs items x current price {expected}"
             )
-        for pid, _ in items:
-            if pid in products and products[pid].status != "active":
-                non_sellable.append(
-                    f"order {order.order_id} ({order.status}) has product {pid} ({products[pid].status})"
-                )
+        non_sellable += [
+            f"order {order.order_id} ({order.status}) has product {pid} ({products[pid].status})"
+            for pid, _ in items
+            if pid in products and products[pid].status != "active"
+        ]
+    findings: list[Finding] = []
     if mismatches:
         findings.append(
             Finding(
@@ -158,47 +163,65 @@ def analyze(dataset: RawDataset) -> list[Finding]:
                 "Kept as historical facts; documented as a data inconsistency.",
             )
         )
-
-    findings.append(
+    latest = max(o.order_date for o in data.orders)
+    findings += [
         Finding(
             "No receipt date on orders",
             "Orders only have `estimated_delivery`; return windows (§4.1, §4.3) count from the receipt date.",
             "For delivered orders the estimated delivery date is assumed to be the receipt date.",
-        )
-    )
-    latest = max(o.order_date for o in dataset.orders)
-    findings.append(
+        ),
         Finding(
             "Historical data",
             f"The most recent order is from {latest:%Y-%m-%d}; with today's date every return window is closed.",
             "The business clock accepts APP_REFERENCE_DATE so that return scenarios can be demonstrated.",
-        )
-    )
+        ),
+    ]
+    return findings
 
+
+def _near_duplicate_customers(data: RawDataset) -> list[Finding]:
     first_last: dict[str, list[str]] = defaultdict(list)
-    for customer in customers.values():
+    for customer in data.customers:
         parts = _ascii(customer.name).split()
         first_last[f"{parts[0]} {parts[-1]}"].append(customer.name)
     similar = [names for names in first_last.values() if len(names) > 1]
     prefix_dupes = [
         (a.name, b.name)
-        for a in customers.values()
-        for b in customers.values()
-        if (a.customer_id < b.customer_id and _ascii(a.name).startswith(_ascii(b.name) + " "))
-        or (a.customer_id < b.customer_id and _ascii(b.name).startswith(_ascii(a.name) + " "))
-    ]
-    if similar or prefix_dupes:
-        detail = "; ".join(" / ".join(n) for n in similar)
-        if prefix_dupes:
-            detail += ("; " if detail else "") + "; ".join(f"{a} / {b}" for a, b in prefix_dupes)
-        findings.append(
-            Finding(
-                "Customers with near-duplicate names",
-                detail,
-                "Identity is verified by e-mail or phone, never by name.",
-            )
+        for a in data.customers
+        for b in data.customers
+        if a.customer_id < b.customer_id
+        and (
+            _ascii(a.name).startswith(_ascii(b.name) + " ")
+            or _ascii(b.name).startswith(_ascii(a.name) + " ")
         )
-    return findings
+    ]
+    if not (similar or prefix_dupes):
+        return []
+    detail = "; ".join(" / ".join(n) for n in similar)
+    if prefix_dupes:
+        detail += ("; " if detail else "") + "; ".join(f"{a} / {b}" for a, b in prefix_dupes)
+    return [
+        Finding(
+            "Customers with near-duplicate names",
+            detail,
+            "Identity is verified by e-mail or phone, never by name.",
+        )
+    ]
+
+
+CHECKS = (
+    _invalid_rows,
+    _catalog_coverage,
+    _product_status,
+    _promotions,
+    _broken_references,
+    _orders,
+    _near_duplicate_customers,
+)
+
+
+def analyze(dataset: RawDataset) -> list[Finding]:
+    return [finding for check in CHECKS for finding in check(dataset)]
 
 
 def render_markdown(dataset: RawDataset, findings: list[Finding]) -> str:

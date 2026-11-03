@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from emporio.catalog.application.ports import ProductFilter
 from emporio.catalog.infrastructure.repositories import SqlProductReader
 from emporio.ingestion.pipeline import ingest_embeddings
-from emporio.knowledge.infrastructure.embedders import HashingEmbedder
 from emporio.knowledge.infrastructure.retriever import SqlPolicyRetriever
+from tests.support import HashingEmbedder
 
 from .conftest import DATA_DIR
 

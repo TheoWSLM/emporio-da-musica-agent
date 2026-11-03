@@ -52,6 +52,28 @@ class StoreStatus:
     next_opening: datetime | None
 
 
+def describe_weekly_hours() -> list[str]:
+    """The schedule in words, derived from WEEKLY_SCHEDULE (e.g. "segunda a sexta: 09:00 às 18:00")."""
+    lines: list[str] = []
+    day = 0
+    while day < 7:
+        window = WEEKLY_SCHEDULE[day]
+        last = day
+        while last + 1 < 7 and WEEKLY_SCHEDULE[last + 1] == window:
+            last += 1
+        if window is not None:
+            days = (
+                WEEKDAY_NAMES[day]
+                if day == last
+                else f"{WEEKDAY_NAMES[day]} a {WEEKDAY_NAMES[last]}"
+            )
+            lines.append(f"{days}: {window.opens:%H:%M} às {window.closes:%H:%M}")
+        day = last + 1
+    closed = [f"{WEEKDAY_NAMES[d]}s" for d in range(7) if WEEKLY_SCHEDULE[d] is None]
+    lines.append(f"{', '.join(closed)} e feriados: fechado")
+    return lines
+
+
 def holiday_name(day: date) -> str | None:
     return FIXED_NATIONAL_HOLIDAYS.get((day.month, day.day))
 

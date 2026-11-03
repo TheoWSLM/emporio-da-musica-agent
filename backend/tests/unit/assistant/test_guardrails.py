@@ -54,3 +54,18 @@ def test_personal_data_only_for_verified_customers() -> None:
     assert personal_data_leaks("O e-mail dele é lucas.mendes@jmail.com", allowed) == [
         "e-mail lucas.mendes@jmail.com"
     ]
+
+
+async def test_unexpected_tool_failure_becomes_a_structured_error() -> None:
+    import json
+
+    from emporio.assistant.tools.context import ToolContext
+    from emporio.assistant.tools.registry import execute
+    from tests.graph.fakes import services
+
+    broken = services()
+    object.__setattr__(broken, "store", None)  # get_store_status will raise AttributeError
+    result = await execute("get_store_status", "{}", "c1", ToolContext(services=broken))
+
+    assert result.ok is False
+    assert "temporary failure" in json.loads(result.output)["error"]

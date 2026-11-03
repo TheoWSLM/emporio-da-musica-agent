@@ -37,16 +37,3 @@ class ReferenceDateClock:
 
     def today(self) -> date:
         return self._date
-
-
-class FixedClock:
-    """Fully frozen clock, for tests."""
-
-    def __init__(self, moment: datetime) -> None:
-        self._moment = moment
-
-    def now(self) -> datetime:
-        return self._moment
-
-    def today(self) -> date:
-        return self._moment.date()

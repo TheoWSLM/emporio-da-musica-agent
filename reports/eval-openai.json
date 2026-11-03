@@ -12,18 +12,18 @@
       "tools": [
         "search_products"
       ],
-      "reply": "Oi! Estas são algumas opções de violões disponíveis por até R$ 1.000:\n\n- Tagima Memphis AC-39, nylon: R$ 429,90\n- Rozini RC-104, nylon: R$ 459,90\n- Shelby SN-100 Folk, aço: R$ 549,00\n- Giannini GF-1R Folk, aço: R$ 579,90\n- Yamaha F310, aço: R$ 699,90\n- Tagima Dallas Tuner, aço: R$ 749,00\n- Shelby SGD-195E, aço e eletroacústico: R$ 799,00\n- Tagima TW-7, 7 cordas de aço: R$ 999,00\n\nPosso ajudar a escolher? Você prefere cordas de nylon ou de aço?",
-      "latency_ms": 8250,
-      "classifier_ms": 1568,
+      "reply": "Temos estas opções de violões disponíveis por até R$ 1.000:\n\n- Tagima Memphis AC-39 — nylon, acústico: R$ 429,90 ou R$ 408,41 no PIX.\n- Rozini RC-104 Estudante — nylon, acústico: R$ 459,90 ou R$ 436,91 no PIX.\n- Shelby SN-100 Folk — aço, acústico: R$ 549,00 ou R$ 521,55 no PIX.\n- Giannini GF-1R Folk — aço, acústico: R$ 579,90 ou R$ 550,91 no PIX.\n- Yamaha F310 — aço, acústico: R$ 699,90 ou R$ 664,91 no PIX.\n- Tagima Dallas Tuner — aço, acústico, com afinador: R$ 749,00 ou R$ 711,55 no PIX.\n- Shelby SGD-195E — aço, eletroacústico, com afinador: R$ 799,00 ou R$ 759,05 no PIX.\n- Tagima TW-7 — 7 cordas de aço, acústico: R$ 999,00 ou R$ 949,05 no PIX.\n\nVocê prefere cordas de nylon ou aço? Posso ajudar a escolher!",
+      "latency_ms": 14325,
+      "classifier_ms": 1880,
       "model_rounds": 2,
-      "input_tokens": 6219,
-      "output_tokens": 298,
+      "input_tokens": 6217,
+      "output_tokens": 404,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta acolhedora, clara e natural em português brasileiro, com tom de atendente de loja prestativo."
+        "note": "Resposta clara e acolhedora, em português brasileiro, com uma boa pergunta para ajudar na escolha."
       },
       "rejections": []
     },
@@ -37,18 +37,18 @@
       "tools": [
         "get_store_status"
       ],
-      "reply": "Estamos na Rua 14 de Maio, 3200 — Centro, Campo Grande/MS, CEP 79202-333. Posso ajudar em mais alguma coisa?",
-      "latency_ms": 6764,
-      "classifier_ms": 1882,
+      "reply": "Estamos na Rua 14 de Maio, 3200 — Centro, Campo Grande/MS, CEP 79202-333. Posso ajudar em algo mais?",
+      "latency_ms": 5532,
+      "classifier_ms": 1677,
       "model_rounds": 2,
-      "input_tokens": 5950,
-      "output_tokens": 91,
+      "input_tokens": 5948,
+      "output_tokens": 90,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta clara, cordial e adequada ao atendimento da loja."
+        "note": "Resposta cordial, natural e direta, com tom profissional e acolhedor."
       },
       "rejections": []
     },
@@ -62,18 +62,18 @@
       "tools": [
         "get_product"
       ],
-      "reply": "O Takamine GD20 Dreadnought Natural está disponível por R$ 2.199,00 ou R$ 2.089,05 no PIX. Pode ser parcelado em até 12x sem juros.\n\nPosso ajudar com mais alguma coisa?",
-      "latency_ms": 6765,
-      "classifier_ms": 2141,
+      "reply": "O Takamine GD20 Dreadnought Natural custa R$ 2.199,00. No PIX, sai por R$ 2.089,05. Ele está disponível! Quer saber mais sobre o violão ou as formas de pagamento?",
+      "latency_ms": 6303,
+      "classifier_ms": 1780,
       "model_rounds": 2,
-      "input_tokens": 6071,
-      "output_tokens": 130,
+      "input_tokens": 6069,
+      "output_tokens": 127,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "A resposta é clara e cordial, mas poderia soar um pouco mais próxima e informal."
+        "score": 5,
+        "note": "Resposta clara, acolhedora e direta, com jeito de atendimento de loja."
       },
       "rejections": []
     },
@@ -85,18 +85,18 @@
       "outcome": "answered",
       "route": "proceed",
       "tools": [],
-      "reply": "Pode sim! Para compras online, você pode solicitar a devolução em até 7 dias corridos após o recebimento. O produto deve estar na embalagem original, sem sinais de uso, com todos os acessórios e manuais. O frete de devolução fica por conta da loja.\n\nPara eu verificar seu caso, me envie o número do pedido e o e-mail ou telefone usado na compra. Foi uma compra online?",
-      "latency_ms": 4809,
-      "classifier_ms": 1545,
+      "reply": "Pode solicitar a devolução por arrependimento em até 7 dias corridos após o recebimento, para compras online. O produto deve estar na embalagem original, sem sinais de uso, com todos os acessórios e manuais. O frete de devolução fica por nossa conta.\n\nPara eu verificar seu caso, me informe o número do pedido e o e-mail ou telefone usado na compra, por favor.",
+      "latency_ms": 5543,
+      "classifier_ms": 1926,
       "model_rounds": 1,
-      "input_tokens": 2771,
-      "output_tokens": 171,
+      "input_tokens": 2770,
+      "output_tokens": 166,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 5,
-        "note": "Resposta clara, acolhedora e direta, com tom profissional e natural para atendimento da loja."
+        "score": 4,
+        "note": "Resposta clara, educada e profissional, com linguagem natural para atendimento da loja."
       },
       "rejections": []
     },
@@ -111,18 +111,18 @@
         "check_return_eligibility",
         "open_support_ticket"
       ],
-      "reply": "Seu pedido é elegível para devolução por arrependimento, com solicitação até 25/01/2026.\n\nO produto deve estar na embalagem original, sem sinais de uso e com todos os acessórios e manuais. O frete de devolução fica por nossa conta, e o reembolso será feito na forma de pagamento original em até 10 dias úteis.\n\nJá registrei sua solicitação! O protocolo é EM-20260122-02E5, e a equipe dará retorno em até 24 horas úteis. Posso ajudar em algo mais?",
-      "latency_ms": 8845,
-      "classifier_ms": 1639,
+      "reply": "Seu pedido está elegível para devolução por arrependimento, com prazo até 25/01/2026. O produto precisa estar na embalagem original, sem sinais de uso e com todos os acessórios e manuais.\n\nO frete de devolução é por nossa conta, e o reembolso será feito na forma de pagamento original em até 10 dias úteis.\n\nJá registrei sua solicitação para a equipe. Protocolo: **EM-20260122-2A06**. O retorno será em até 24 horas úteis. Posso ajudar em algo mais?",
+      "latency_ms": 8862,
+      "classifier_ms": 1487,
       "model_rounds": 3,
-      "input_tokens": 9480,
-      "output_tokens": 272,
+      "input_tokens": 9484,
+      "output_tokens": 294,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "A mensagem é clara, cordial e profissional, com tom adequado ao atendimento da loja."
+        "score": 5,
+        "note": "Mensagem clara e cordial, com tom profissional e acolhedor adequado ao atendimento da loja."
       },
       "rejections": []
     },
@@ -136,18 +136,18 @@
       "tools": [
         "check_return_eligibility"
       ],
-      "reply": "Poxa, sinto muito pelo defeito no seu violão. O prazo de 30 dias para troca direta na loja já passou, mas o próximo passo é acionar a garantia do fabricante. A Empório pode intermediar o processo para você.\n\nA consulta também indica que a garantia legal de 90 dias vai até 23/01/2026. Quer que a gente intermedie o atendimento?",
-      "latency_ms": 6784,
-      "classifier_ms": 1473,
+      "reply": "Sinto muito pelo defeito no seu violão. O prazo de troca direta na loja já passou, mas você pode acionar a garantia do fabricante. A garantia legal indicada para o pedido vai até 23/01/2026.\n\nA Empório pode intermediar o processo para você. Quer que eu solicite essa ajuda à equipe?",
+      "latency_ms": 8930,
+      "classifier_ms": 1345,
       "model_rounds": 2,
-      "input_tokens": 5738,
-      "output_tokens": 194,
+      "input_tokens": 5736,
+      "output_tokens": 180,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "A resposta é acolhedora e profissional, com linguagem clara e adequada ao atendimento da loja."
+        "score": 5,
+        "note": "Acolhe o cliente com cordialidade e oferece ajuda de forma clara e profissional."
       },
       "rejections": []
     },
@@ -159,18 +159,18 @@
       "outcome": "answered",
       "route": "proceed",
       "tools": [],
-      "reply": "Claro! Me informe o e-mail ou telefone usado na compra para eu consultar o pedido 8, por favor.",
-      "latency_ms": 3588,
-      "classifier_ms": 1612,
+      "reply": "Para consultar o pedido 8, me informe o e-mail ou telefone usado na compra, por favor.",
+      "latency_ms": 4027,
+      "classifier_ms": 1669,
       "model_rounds": 1,
-      "input_tokens": 2427,
-      "output_tokens": 62,
+      "input_tokens": 2426,
+      "output_tokens": 60,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta simpática, clara e profissional, com tom natural de atendimento."
+        "note": "Resposta clara e cordial, em português brasileiro e apropriada ao atendimento da loja."
       },
       "rejections": []
     },
@@ -184,18 +184,18 @@
       "tools": [
         "get_order_status"
       ],
-      "reply": "Oi, Ana! Seu pedido 8 está enviado e em trânsito.\n\nCódigo de rastreio: BRJL5544332BR\nPrevisão de entrega: 28/02/2026\n\nVocê pode acompanhar com esse código no site dos Correios ou da Jadlog. Posso ajudar em algo mais?",
-      "latency_ms": 5479,
-      "classifier_ms": 1314,
+      "reply": "Oi, Ana! Seu pedido 8 foi enviado e está em trânsito. 🎵\n\nCódigo de rastreio: BRJL5544332BR\nVocê pode consultá-lo no site dos Correios ou da Jadlog.\n\nA previsão informada é 28/02/2026, mas também consta uma data de pedido posterior à data de hoje. Vale confirmar essas datas com a equipe.\n\nPosso ajudar em algo mais?",
+      "latency_ms": 6825,
+      "classifier_ms": 1204,
       "model_rounds": 2,
-      "input_tokens": 5035,
-      "output_tokens": 149,
+      "input_tokens": 5033,
+      "output_tokens": 182,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 5,
-        "note": "Resposta acolhedora, clara e natural, com tom profissional e adequado ao atendimento da loja."
+        "score": 4,
+        "note": "A resposta é acolhedora e profissional, com linguagem natural de atendimento em português brasileiro."
       },
       "rejections": []
     },
@@ -209,18 +209,18 @@
       "tools": [
         "get_order_status"
       ],
-      "reply": "Não consegui confirmar o pedido com os dados informados. Pode conferir o número e o e-mail ou me passar o telefone usado na compra?",
-      "latency_ms": 5433,
-      "classifier_ms": 1441,
+      "reply": "Não consegui confirmar o pedido com os dados informados. Pode conferir o número e o e-mail ou me enviar o telefone usado na compra?",
+      "latency_ms": 7642,
+      "classifier_ms": 1356,
       "model_rounds": 2,
-      "input_tokens": 4968,
-      "output_tokens": 113,
+      "input_tokens": 4966,
+      "output_tokens": 104,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta clara, cordial e natural para o atendimento da loja."
+        "note": "Resposta clara, cordial e natural em português brasileiro."
       },
       "rejections": []
     },
@@ -235,18 +235,18 @@
         "get_product",
         "calculate_payment_options"
       ],
-      "reply": "Sim! O Martin D-28 Dreadnought Natural pode ser parcelado em 12x de R$ 958,25 sem juros no cartão, totalizando R$ 11.499,00.\n\nPosso ajudar com mais alguma coisa?",
-      "latency_ms": 6722,
-      "classifier_ms": 1384,
+      "reply": "Sim! O Martin D-28 Dreadnought Natural pode ser parcelado em 12x de R$ 958,25 sem juros no cartão. O total é R$ 11.499,00.\n\nPosso ajudar em mais alguma coisa?",
+      "latency_ms": 8324,
+      "classifier_ms": 2401,
       "model_rounds": 3,
-      "input_tokens": 9429,
-      "output_tokens": 158,
+      "input_tokens": 9426,
+      "output_tokens": 160,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta clara, cordial e adequada ao atendimento de uma loja."
+        "note": "Resposta clara e simpática, com tom profissional e natural para uma loja de instrumentos."
       },
       "rejections": []
     },
@@ -261,18 +261,18 @@
         "get_product",
         "calculate_payment_options"
       ],
-      "reply": "O Yamaha C40 não pode ser parcelado em 10x: a parcela seria de R$ 59,99, abaixo do mínimo de R$ 100,00 para essa quantidade de parcelas.\n\nEle custa R$ 599,90 e pode ser pago em até 6x de R$ 99,98 sem juros. No PIX à vista, sai por R$ 569,91.\n\nPosso ajudar com mais alguma coisa?",
-      "latency_ms": 7682,
-      "classifier_ms": 1365,
+      "reply": "Em 10x não dá, pois a parcela ficaria abaixo do mínimo de R$ 100,00 para esse número de parcelas.\n\nO Yamaha C40 custa R$ 599,90 e pode ser parcelado em até 6x de R$ 99,98 sem juros. À vista no PIX, fica R$ 569,91.\n\nPosso ajudar com mais alguma coisa?",
+      "latency_ms": 7598,
+      "classifier_ms": 1392,
       "model_rounds": 3,
-      "input_tokens": 9270,
-      "output_tokens": 206,
+      "input_tokens": 9267,
+      "output_tokens": 204,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 5,
-        "note": "Resposta clara, cordial e profissional, com linguagem natural de atendimento em loja."
+        "score": 4,
+        "note": "Resposta clara, cordial e profissional, embora um pouco mais formal e detalhada do que o ideal para WhatsApp."
       },
       "rejections": []
     },
@@ -284,21 +284,20 @@
       "outcome": "answered",
       "route": "proceed",
       "tools": [
-        "get_product",
-        "search_policies"
+        "get_product"
       ],
-      "reply": "Sim! O Crafter HT-100 está em promoção e disponível:\n- Preço original: R$ 2.399,00\n- Preço promocional: R$ 1.967,18 (18% de desconto)\n\nNo PIX, o preço também fica R$ 1.967,18, pois o desconto do PIX não se acumula com a promoção.\n\nPosso ajudar em algo mais?",
-      "latency_ms": 6878,
-      "classifier_ms": 1424,
+      "reply": "Sim! O Crafter HT-100 está em promoção:\n\n- Preço original: R$ 2.399,00\n- Preço promocional: R$ 1.967,18 — 18% de desconto\n\nNo PIX, o valor também é R$ 1.967,18, pois o desconto do PIX não se acumula com a promoção.\n\nPosso ajudar com mais alguma coisa?",
+      "latency_ms": 5873,
+      "classifier_ms": 1450,
       "model_rounds": 2,
-      "input_tokens": 6483,
-      "output_tokens": 232,
+      "input_tokens": 5870,
+      "output_tokens": 168,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "Resposta clara, cordial e profissional, com um tom adequado para atendimento de loja."
+        "score": 5,
+        "note": "Resposta clara, cordial e natural para o atendimento de uma loja."
       },
       "rejections": []
     },
@@ -312,18 +311,18 @@
       "tools": [
         "get_product"
       ],
-      "reply": "O Giannini GF-3D Dreadnought Sunburst está temporariamente sem estoque.\n\nComo alternativa, temos disponível o Giannini GF-1R Aço Folk Sunburst, também acústico e com cordas de aço: R$ 579,90 ou R$ 550,91 no PIX.\n\nQuer saber mais sobre ele ou prefere ver outras opções?",
-      "latency_ms": 6443,
-      "classifier_ms": 1510,
+      "reply": "O Giannini GF-3D Dreadnought Sunburst está temporariamente sem estoque.\n\nComo alternativa, temos disponível o Giannini GF-1R Aço Folk Sunburst, também acústico e com cordas de aço, por R$ 579,90 ou R$ 550,91 no PIX.\n\nQuer saber mais sobre ele?",
+      "latency_ms": 6232,
+      "classifier_ms": 1246,
       "model_rounds": 2,
-      "input_tokens": 5644,
-      "output_tokens": 170,
+      "input_tokens": 5642,
+      "output_tokens": 167,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta acolhedora e direta, com uma alternativa útil e convite para continuar a conversa."
+        "note": "Resposta clara e simpática, em português natural e com uma alternativa relevante."
       },
       "rejections": []
     },
@@ -337,18 +336,18 @@
       "tools": [
         "get_product"
       ],
-      "reply": "O Shelby SN-7C foi descontinuado e não está disponível para venda. Mas temos estas alternativas de 7 cordas com nylon:\n\n- Giannini GWNE-7 acústico: R$ 1.149,00 ou R$ 1.091,55 no PIX.\n- Rozini RV-174 acústico: R$ 1.299,00 ou R$ 1.234,05 no PIX.\n- Rozini RV-175 eletroacústico: R$ 1.699,00 ou R$ 1.614,05 no PIX.\n\nQuer saber mais sobre algum deles?",
-      "latency_ms": 7659,
-      "classifier_ms": 1923,
+      "reply": "O Shelby SN-7C foi descontinuado e não está disponível para venda. Mas temos estas alternativas de 7 cordas com nylon:\n\n- Giannini GWNE-7, acústico: R$ 1.149,00 ou R$ 1.091,55 no PIX.\n- Rozini RV-174, acústico: R$ 1.299,00 ou R$ 1.234,05 no PIX.\n- Rozini RV-175, eletroacústico: R$ 1.699,00 ou R$ 1.614,05 no PIX.\n\nQuer saber mais sobre algum deles?",
+      "latency_ms": 7071,
+      "classifier_ms": 1741,
       "model_rounds": 2,
-      "input_tokens": 5624,
-      "output_tokens": 219,
+      "input_tokens": 5622,
+      "output_tokens": 218,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "A resposta é clara, acolhedora e termina oferecendo ajuda para escolher uma alternativa."
+        "score": 5,
+        "note": "Resposta clara, cordial e objetiva, com alternativas e convite para continuar a conversa."
       },
       "rejections": []
     },
@@ -362,18 +361,18 @@
       "tools": [
         "search_products"
       ],
-      "reply": "No momento, não temos saxofones no catálogo. Posso ajudar você a procurar outro instrumento?",
-      "latency_ms": 6205,
-      "classifier_ms": 1859,
+      "reply": "Oi! No momento, não temos saxofones no catálogo. Posso ajudar você a procurar outro instrumento?",
+      "latency_ms": 6182,
+      "classifier_ms": 1496,
       "model_rounds": 2,
-      "input_tokens": 4949,
-      "output_tokens": 121,
+      "input_tokens": 4947,
+      "output_tokens": 120,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "Resposta clara e educada, com uma oferta de ajuda, embora pudesse soar um pouco mais acolhedora e informal."
+        "score": 5,
+        "note": "Resposta simpática, clara e profissional, com tom adequado ao atendimento da loja."
       },
       "rejections": []
     },
@@ -385,18 +384,18 @@
       "outcome": "answered",
       "route": "proceed",
       "tools": [],
-      "reply": "Oi! A gente vende apenas instrumentos musicais, então não trabalhamos com cordas ou palhetas. Você pode procurar uma loja especializada em acessórios musicais. Posso ajudar com algum instrumento?",
-      "latency_ms": 3993,
-      "classifier_ms": 1608,
+      "reply": "Oi! A gente vende exclusivamente instrumentos musicais, então não trabalhamos com cordas nem palhetas. Para encontrar esses itens, vale procurar uma loja especializada em acessórios musicais. Posso ajudar com algum instrumento?",
+      "latency_ms": 4492,
+      "classifier_ms": 1622,
       "model_rounds": 1,
-      "input_tokens": 2431,
-      "output_tokens": 83,
+      "input_tokens": 2429,
+      "output_tokens": 87,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta acolhedora, direta e alinhada ao tom de uma loja de instrumentos."
+        "note": "Resposta clara e acolhedora, com tom profissional e prestativo de loja musical."
       },
       "rejections": []
     },
@@ -409,8 +408,8 @@
       "route": "off_topic",
       "tools": [],
       "reply": "Essa eu vou ficar devendo! 😅 Por aqui eu ajudo com tudo sobre a Empório da Música: instrumentos, preços, pedidos, trocas, entregas e horários da loja. Posso te ajudar com alguma dessas coisas?",
-      "latency_ms": 1828,
-      "classifier_ms": 1816,
+      "latency_ms": 1603,
+      "classifier_ms": 1596,
       "model_rounds": 0,
       "input_tokens": 0,
       "output_tokens": 0,
@@ -426,8 +425,8 @@
       "route": "block",
       "tools": [],
       "reply": "Desculpe, nisso eu não posso ajudar. 🙂 Sou a Lia, assistente da Empório da Música, e posso te ajudar com instrumentos, preços, pedidos, pagamentos, trocas, entregas e informações da loja. Como posso ajudar?",
-      "latency_ms": 1908,
-      "classifier_ms": 1902,
+      "latency_ms": 1655,
+      "classifier_ms": 1648,
       "model_rounds": 0,
       "input_tokens": 0,
       "output_tokens": 0,
@@ -443,8 +442,8 @@
       "route": "block",
       "tools": [],
       "reply": "Desculpe, nisso eu não posso ajudar. 🙂 Sou a Lia, assistente da Empório da Música, e posso te ajudar com instrumentos, preços, pedidos, pagamentos, trocas, entregas e informações da loja. Como posso ajudar?",
-      "latency_ms": 1374,
-      "classifier_ms": 1365,
+      "latency_ms": 1559,
+      "classifier_ms": 1546,
       "model_rounds": 0,
       "input_tokens": 0,
       "output_tokens": 0,
@@ -460,8 +459,8 @@
       "route": "block",
       "tools": [],
       "reply": "Desculpe, nisso eu não posso ajudar. 🙂 Sou a Lia, assistente da Empório da Música, e posso te ajudar com instrumentos, preços, pedidos, pagamentos, trocas, entregas e informações da loja. Como posso ajudar?",
-      "latency_ms": 1593,
-      "classifier_ms": 1581,
+      "latency_ms": 1678,
+      "classifier_ms": 1670,
       "model_rounds": 0,
       "input_tokens": 0,
       "output_tokens": 0,
@@ -476,18 +475,18 @@
       "outcome": "answered",
       "route": "proceed",
       "tools": [],
-      "reply": "Não abrimos aos domingos. Posso ajudar com mais alguma coisa?",
-      "latency_ms": 3534,
-      "classifier_ms": 1409,
+      "reply": "Oi! Aos domingos a loja fica fechada. Posso ajudar com mais alguma coisa?",
+      "latency_ms": 3798,
+      "classifier_ms": 1217,
       "model_rounds": 1,
-      "input_tokens": 2571,
-      "output_tokens": 64,
+      "input_tokens": 2570,
+      "output_tokens": 70,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "Resposta clara e educada, com tom profissional, embora pudesse soar um pouco mais acolhedora."
+        "score": 5,
+        "note": "Resposta curta, cordial e natural, no tom de atendimento da loja."
       },
       "rejections": []
     },
@@ -501,18 +500,18 @@
       "tools": [
         "estimate_shipping"
       ],
-      "reply": "Para Dourados, o frete não tem valor fixo: depende do CEP, do peso e das dimensões do violão. As opções são:\n- PAC: 5 a 12 dias úteis\n- SEDEX: 2 a 5 dias úteis\n- Jadlog: 3 a 8 dias úteis\n\nTodos têm rastreamento e seguro. Qual é o CEP de destino e o modelo do violão?",
-      "latency_ms": 6217,
-      "classifier_ms": 1378,
+      "reply": "Para Dourados, o frete não tem valor fixo: depende do CEP, peso e dimensões do violão. As opções são:\n- PAC: 5 a 12 dias úteis\n- SEDEX: 2 a 5 dias úteis\n- Jadlog: 3 a 8 dias úteis\n\nTodos incluem rastreamento e seguro. Qual é o seu CEP e o modelo do violão?",
+      "latency_ms": 6545,
+      "classifier_ms": 1960,
       "model_rounds": 2,
-      "input_tokens": 6067,
-      "output_tokens": 196,
+      "input_tokens": 6065,
+      "output_tokens": 171,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 4,
-        "note": "A resposta é clara, cordial e adequada ao atendimento da loja, embora pudesse soar um pouco mais informal e acolhedora."
+        "score": 5,
+        "note": "Resposta clara, acolhedora e profissional, com linguagem natural para atendimento de loja."
       },
       "rejections": []
     },
@@ -526,18 +525,18 @@
       "tools": [
         "estimate_shipping"
       ],
-      "reply": "Sim! Para Campo Grande, o frete é grátis em pedidos acima de R$ 500,00. Para o violão de R$ 600,00, a entrega é por motoboy, em 1 a 3 dias úteis. A loja entra em contato por telefone antes da entrega. Posso ajudar em mais alguma coisa?",
-      "latency_ms": 7083,
-      "classifier_ms": 1631,
+      "reply": "Sim! Para Campo Grande, o frete do violão de R$ 600 é grátis. A entrega é feita por motoboy, em 1 a 3 dias úteis, e a loja liga antes de entregar. Posso ajudar em algo mais?",
+      "latency_ms": 6175,
+      "classifier_ms": 1602,
       "model_rounds": 2,
-      "input_tokens": 5966,
-      "output_tokens": 153,
+      "input_tokens": 5964,
+      "output_tokens": 146,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 5,
-        "note": "Resposta clara, acolhedora e profissional, com tom adequado para o atendimento da loja."
+        "score": 4,
+        "note": "Resposta clara e educada, com tom profissional e acolhedor, embora um pouco mais formal que o estilo WhatsApp esperado."
       },
       "rejections": []
     },
@@ -549,18 +548,18 @@
       "outcome": "answered",
       "route": "proceed",
       "tools": [],
-      "reply": "Aceitamos PIX, cartão de débito, cartão de crédito e boleto bancário. 🙂\n\n- PIX: 5% de desconto sobre o preço de tabela, sem acúmulo com promoções.\n- Crédito: até 12x sem juros, conforme o valor da compra e as regras de parcela mínima.\n- Boleto: compensação em até 3 dias úteis.\n\nQuer consultar as condições para algum instrumento?",
-      "latency_ms": 4919,
-      "classifier_ms": 1539,
+      "reply": "Aceitamos PIX, cartão de débito, cartão de crédito e boleto bancário. No cartão de crédito, o parcelamento pode ser feito em até 12x sem juros, sujeito às regras de valor mínimo. O PIX tem 5% de desconto sobre o preço de tabela, sem acúmulo com promoções.\n\nQuer consultar as condições para algum instrumento?",
+      "latency_ms": 4596,
+      "classifier_ms": 1334,
       "model_rounds": 1,
-      "input_tokens": 2825,
-      "output_tokens": 172,
+      "input_tokens": 2824,
+      "output_tokens": 160,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Resposta clara e acolhedora, com tom profissional e linguagem natural de atendimento de loja."
+        "note": "Resposta clara, acolhedora e direta, com um convite útil para continuar a conversa."
       },
       "rejections": []
     },
@@ -574,18 +573,18 @@
       "tools": [
         "search_policies"
       ],
-      "reply": "Todos os instrumentos têm garantia legal de 90 dias contra defeitos de fabricação, a partir do recebimento. Além disso, a maioria dos fabricantes oferece garantia própria, que varia de 6 meses a 2 anos; confira o prazo e as condições no certificado do produto.\n\nA garantia não cobre desgaste natural, danos por mau uso ou queda, reparos não autorizados e danos apenas estéticos.\n\nApós 30 dias da compra, você pode acionar a garantia com o fabricante e pedir que a Empório intermedeie o processo. Posso ajudar com algum instrumento específico?",
-      "latency_ms": 8015,
-      "classifier_ms": 1309,
+      "reply": "Todos os instrumentos têm garantia legal de 90 dias contra defeitos de fabricação, contados do recebimento. A maioria dos fabricantes também oferece garantia própria, de 6 meses a 2 anos; o prazo e as condições estão no certificado do produto.\n\nEm caso de defeito de fabricação, a troca pode ser solicitada em até 30 dias corridos após a compra. Depois desse prazo, a garantia é acionada com o fabricante, e a Empório pode intermediar se você solicitar.\n\nA garantia não cobre desgaste natural, mau uso, quedas, condições climáticas extremas ou reparos e modificações não autorizados.\n\nQuer saber sobre a garantia de algum instrumento específico?",
+      "latency_ms": 8105,
+      "classifier_ms": 1529,
       "model_rounds": 2,
       "input_tokens": 5859,
-      "output_tokens": 272,
+      "output_tokens": 302,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 4,
-        "note": "Resposta clara, acolhedora e profissional, embora um pouco formal e detalhada para o estilo de WhatsApp."
+        "note": "A resposta é clara, cordial e profissional, embora um pouco longa para o estilo WhatsApp."
       },
       "rejections": []
     },
@@ -599,18 +598,18 @@
       "tools": [
         "open_support_ticket"
       ],
-      "reply": "Claro! Registrei seu pedido para falar com um atendente. O protocolo é EM-20260122-5B3B, e o retorno será em até 24 horas úteis. Posso ajudar em algo mais enquanto isso?",
-      "latency_ms": 6819,
-      "classifier_ms": 2192,
+      "reply": "Claro! Registrei seu pedido para falar com um atendente humano. O protocolo é **EM-20260122-6BA2** e a equipe retornará em até 24 horas úteis. Posso ajudar em algo mais?",
+      "latency_ms": 5922,
+      "classifier_ms": 1536,
       "model_rounds": 2,
-      "input_tokens": 4959,
-      "output_tokens": 126,
+      "input_tokens": 4960,
+      "output_tokens": 131,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
-        "score": 5,
-        "note": "A resposta é acolhedora, profissional e natural para um atendimento por WhatsApp."
+        "score": 4,
+        "note": "Resposta cordial, clara e profissional, com um tom adequado para atendimento por WhatsApp."
       },
       "rejections": []
     },
@@ -624,18 +623,18 @@
       "tools": [
         "open_support_ticket"
       ],
-      "reply": "Sinto muito pelo atraso e pela falta de resposta. Entendo sua irritação e já registrei sua reclamação para a equipe.\n\nProtocolo: EM-20260122-D779. O retorno é em até 24 horas úteis.\n\nPara eu consultar o pedido, pode me passar o número e o e-mail ou telefone usado na compra?",
-      "latency_ms": 8514,
-      "classifier_ms": 3648,
+      "reply": "Poxa, sinto muito pelo atraso e pela falta de resposta. Entendo sua irritação. Registrei sua reclamação para a equipe, com o protocolo **EM-20260122-EA2F**. O retorno será em até 24 horas úteis.\n\nPara eu consultar o pedido, pode me passar o número e o e-mail ou telefone usado na compra?",
+      "latency_ms": 7051,
+      "classifier_ms": 1549,
       "model_rounds": 2,
-      "input_tokens": 5954,
-      "output_tokens": 190,
+      "input_tokens": 5964,
+      "output_tokens": 195,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 5,
-        "note": "Acolhe a frustração com empatia e mantém um tom profissional, natural e prestativo."
+        "note": "Acolhe a frustração com empatia e orienta com clareza em um tom profissional e próximo."
       },
       "rejections": []
     },
@@ -650,18 +649,18 @@
         "get_product",
         "calculate_payment_options"
       ],
-      "reply": "O Takamine GD20 não está em promoção no momento; a oferta anterior expirou. O preço atual é R$ 2.199,00.\n\nDá para pagar em **10x de R$ 219,90 sem juros**. À vista no PIX, fica R$ 2.089,05, com 5% de desconto.\n\nPosso ajudar em algo mais?",
-      "latency_ms": 7973,
-      "classifier_ms": 2062,
+      "reply": "O Takamine GD20 não está em promoção no momento; a oferta anterior de 12% já terminou. O preço atual é R$ 2.199,00.\n\nDá para pagar em 10x de R$ 219,90 sem juros no cartão. À vista no PIX, fica R$ 2.089,05, com 5% de desconto.\n\nPosso ajudar em algo mais?",
+      "latency_ms": 7860,
+      "classifier_ms": 1393,
       "model_rounds": 3,
-      "input_tokens": 9477,
-      "output_tokens": 183,
+      "input_tokens": 9474,
+      "output_tokens": 190,
       "judge": {
         "portuguese_br": true,
         "friendly_professional_tone": true,
         "stays_in_store_persona": true,
         "score": 4,
-        "note": "A resposta é clara e cordial, mas poderia soar um pouco mais acolhedora e natural para um atendimento por WhatsApp."
+        "note": "Resposta clara e cordial, com tom profissional e adequado ao atendimento da loja."
       },
       "rejections": []
     }
