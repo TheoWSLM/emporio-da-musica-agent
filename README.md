@@ -405,7 +405,7 @@ What the evaluation changed:
 - **The prompt-leak detector was recalibrated.** It had flagged "o número do pedido e o e-mail" (normal service
   language), so phrases that also appear in public text no longer count.
 
-The full per-case table is in [`reports/eval-report.md`](reports/eval-report.md). The automated tests (157:
+The full per-case table is in [`reports/eval-report.md`](reports/eval-report.md). The automated tests (158:
 domain rules, ingestion, chunking, retrieval, every tool, classifier contract, graph routing and parallelism,
 API) run in CI without paid API calls.
 
