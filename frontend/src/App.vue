@@ -77,9 +77,7 @@ watch(
       </section>
 
       <MessageComposer :disabled="busy" @send="send" />
-      <p class="disclaimer">
-        Demonstração técnica — loja fictícia. Respostas geradas por IA com dados verificados pelas ferramentas da loja.
-      </p>
+      <p class="disclaimer">Feito por Theo Weber</p>
     </main>
 
     <BackstagePanel v-if="showBackstage" :traces="traces" :config="config" @close="showBackstage = false" />
