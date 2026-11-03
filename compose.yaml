@@ -40,6 +40,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 12
+      start_period: 120s  # the first initdb can be slow on spinning/cheap disks
     mem_limit: 512m
     cpus: 1
 
