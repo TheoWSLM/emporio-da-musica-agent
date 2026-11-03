@@ -7,7 +7,7 @@ import logging
 from collections.abc import Iterable
 from pathlib import Path
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from emporio.infrastructure.orm import (
@@ -16,16 +16,22 @@ from emporio.infrastructure.orm import (
     IngestionRunRow,
     OrderItemRow,
     OrderRow,
+    PolicyChunkRow,
     ProductRow,
     PromotionRow,
 )
 from emporio.ingestion.enrichment import CATEGORY_SYNONYMS, product_search_text
 from emporio.ingestion.loader import CSV_FILES, RawDataset, load_raw_dataset
+from emporio.knowledge.application.ports import Embedder
+from emporio.knowledge.infrastructure.indexing import build_policy_chunks
 
 log = logging.getLogger(__name__)
 
 STRUCTURED_STAGE = "structured"
+EMBEDDINGS_STAGE = "embeddings"
 ENRICHMENT_VERSION = "1"
+CHUNKING_VERSION = "1"
+POLICY_PDF = "store_policies.pdf"
 
 
 def files_hash(paths: Iterable[Path], *extra: str) -> str:
@@ -147,3 +153,65 @@ async def _replace_all(session: AsyncSession, data: RawDataset) -> None:
         for i in data.order_items
         if i.order_id in order_ids and i.product_id in product_ids
     )
+
+
+async def ingest_embeddings(
+    sessions: async_sessionmaker[AsyncSession],
+    data_dir: Path,
+    embedder: Embedder,
+    embedding_model: str,
+    *,
+    force: bool = False,
+) -> bool:
+    """Chunks + embeds the manual and embeds every product's search text. Documents are static, so this
+    runs once per change of data, chunking strategy or embedding model."""
+    async with sessions() as session:
+        structured_hash = await last_hash(session, STRUCTURED_STAGE) or ""
+        content_hash = files_hash(
+            [data_dir / POLICY_PDF], structured_hash, CHUNKING_VERSION, embedding_model
+        )
+        if not force and await last_hash(session, EMBEDDINGS_STAGE) == content_hash:
+            log.info("embeddings unchanged, skipping")
+            return False
+        products = (
+            await session.execute(
+                select(ProductRow.id, ProductRow.search_text).order_by(ProductRow.id)
+            )
+        ).all()
+
+    chunks = await build_policy_chunks(data_dir / POLICY_PDF, embedder)
+    chunk_vectors = await embedder.embed([c.embedding_text for c in chunks])
+    product_vectors = await embedder.embed([text for _, text in products])
+
+    async with sessions() as session, session.begin():
+        await session.execute(delete(PolicyChunkRow))
+        session.add_all(
+            PolicyChunkRow(
+                source=POLICY_PDF,
+                position=chunk.position,
+                section_path=chunk.section_path,
+                heading=chunk.heading,
+                content=chunk.content,
+                token_count=chunk.token_count,
+                content_hash=hashlib.sha256(chunk.content.encode()).hexdigest(),
+                embedding=vector,
+            )
+            for chunk, vector in zip(chunks, chunk_vectors, strict=True)
+        )
+        for (product_id, _), vector in zip(products, product_vectors, strict=True):
+            await session.execute(
+                update(ProductRow).where(ProductRow.id == product_id).values(embedding=vector)
+            )
+        session.add(
+            IngestionRunRow(
+                stage=EMBEDDINGS_STAGE,
+                content_hash=content_hash,
+                details={
+                    "policy_chunks": len(chunks),
+                    "products": len(products),
+                    "model": embedding_model,
+                },
+            )
+        )
+    log.info("embedded %d policy chunks and %d products", len(chunks), len(products))
+    return True

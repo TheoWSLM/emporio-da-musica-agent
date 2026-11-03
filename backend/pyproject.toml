@@ -69,3 +69,4 @@ markers = [
     "evals: calls real LLMs (needs OPENAI_API_KEY)",
 ]
 addopts = "-m 'not evals'"
+filterwarnings = ["ignore:builtin type swig:DeprecationWarning"]

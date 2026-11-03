@@ -7,18 +7,31 @@ import asyncio
 import logging
 from pathlib import Path
 
+from openai import AsyncOpenAI
+
 from emporio.config import get_settings
 from emporio.infrastructure.db import create_engine, create_session_factory
 from emporio.ingestion.loader import load_raw_dataset
-from emporio.ingestion.pipeline import ingest_structured
+from emporio.ingestion.pipeline import ingest_embeddings, ingest_structured
 from emporio.ingestion.quality import analyze, render_markdown
+from emporio.knowledge.infrastructure.embedders import OpenAIEmbedder
 
 
 async def _ingest(force: bool) -> None:
     settings = get_settings()
     engine = create_engine(settings.database_url)
+    sessions = create_session_factory(engine)
     try:
-        await ingest_structured(create_session_factory(engine), settings.data_dir, force=force)
+        await ingest_structured(sessions, settings.data_dir, force=force)
+        if settings.openai_api_key is None:
+            raise SystemExit(
+                "OPENAI_API_KEY is not set: cannot build the embeddings (see .env.example)"
+            )
+        client = AsyncOpenAI(api_key=settings.openai_api_key.get_secret_value())
+        embedder = OpenAIEmbedder(client, settings.embedding_model, settings.embedding_dimensions)
+        await ingest_embeddings(
+            sessions, settings.data_dir, embedder, settings.embedding_model, force=force
+        )
     finally:
         await engine.dispose()
 
